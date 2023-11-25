@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Poker Table</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="playerCard">
+<div class="player" id="playerPosition1">YOU</div>
+<div class="playerCards">
+    <div class="card" id="card1"></div>
+    <div class="card" id="card2"></div>
+</div>
+</div>
+
+<div class="player" id="playerPosition2">Player 2</div>
+
+<div class="player" id="playerPosition3">Player 3</div>
+
+<div class="player" id="playerPosition4">Player 4</div>
+
+<div class="player" id="playerPosition5">Player 5</div>
+
+<div class="player" id="playerPosition6">Player 6</div>
+
+  <div class="table">
+    <!-- Other players... -->
+    <div class="community-cards">
+      <!-- Display community cards here -->
+    </div>
+  </div>
+
+  <div class="actions">
+    <button id="dealBtn">Deal</button>
+    <button id="foldBtn">Fold</button>
+    <button id="checkBtn">Check</button>
+    <button id="raiseBtn">Raise</button>
+    <input type="number" id="raiseAmount" placeholder="Amount">
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,72 @@
+body {
+    font-family: Arial, sans-serif;
+  }
+  
+  .table {
+    width: 50rem;
+    height: 15rem;
+    margin: 20px auto;
+    border: 2px solid #000;
+    padding: 20px;
+    background-color: aquamarine;
+    border-radius: 5rem;
+  }
+
+  .player {
+    border: 1px solid #000;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: black;
+    color:aliceblue;
+  }
+
+  #playerPosition1{
+    position: absolute;
+    bottom: 0;
+    display: flex;
+  }
+  #playerPosition2{
+    position: absolute;
+    bottom: 0;
+    right:50%;
+    display: flex;
+  }
+  #playerPosition3{
+    position: absolute;
+    bottom: 50%;
+    right:100%;
+    display: flex;
+  }
+  #playerPosition4{
+    position: absolute;
+    bottom: 0;
+    right:50%;
+    display: flex;
+  }
+  #playerPosition5{
+    position: absolute;
+    bottom: 0;
+    display: flex;
+  }
+
+  .community-cards {
+    margin-top: 4rem;
+    border: 1px solid #000;
+    height: 100px;
+    margin-bottom: 10px;
+  }
+  
+  .player-cards {
+    border: 1px solid #000;
+    height: 100px;
+    margin-bottom: 10px;
+  }
+  
+  .actions {
+    text-align: center;
+  }
+  
+  button {
+    margin: 5px;
+  }
+  
