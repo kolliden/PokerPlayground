@@ -1,90 +1,164 @@
+* {
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+
 body {
-    font-family: Arial, sans-serif;
-  }
-  
-  .table {
-    width: 60rem;
-    height: 21rem;
-    margin: 70px auto;
-    border: 2px solid #000;
-    padding: 20px;
-    background-color: aquamarine;
-    border-radius: 5rem;
-  }
+  font-family: Arial, sans-serif;
+}
 
-  .player {
-    border: 1px solid #000;
-    padding: 10px;
-    margin-bottom: 10px;
-    background-color: black;
-    color:aliceblue;
-  }
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2rem;
+  background-color: #6f6f6f;
+  color: #fff;
+}
 
-  #playerPosition1{
-    position: absolute;
-    bottom: 50%;
-    right: 47%;
-    display: flex;
-  }
-  #playerPosition2{
-    position: absolute;
-    bottom: 53%;
-    right: 77%;
-    display: flex;
-  }
-  #playerPosition3{
-    position: absolute;
-    bottom: 88%;
-    right: 77%;
-    display: flex;
-  }
-  #playerPosition4{
-    position: absolute;
-    bottom: 91%;
-    right: 47%;
-    display: flex;
-  }
-  #playerPosition5{
-    position: absolute;
-    bottom: 88%;
-    right: 17%;
-    display: flex;
-  }
-  #playerPosition6{
-    position: absolute;
-    bottom: 53%;
-    right: 17%;
-    display: flex;
-  }
+li {
+  list-style: none;
+  margin: 0 10px;
+  color: black;
+}
+ul {
+  display: flex;
+  color: black;
+}
+a {
+  text-decoration: none;
+  color: rgb(255, 255, 255);
+}
+img {
+  max-height: 5rem;
+}
 
-  .community-cards {
-    margin-top: 4rem;
-    border: 1px solid #000;
-    height: 100px;
-    margin-bottom: 10px;
-  }
-  
-  .player-cards {
-    border: 1px solid #000;
-    height: 100px;
-    margin-bottom: 10px;
-  }
-  
+.table {
+  width: 60rem;
+  height: 24rem;
+  margin: 2rem auto;
+  border: 2px solid #000;
+  padding: 20px;
+  background-color: aquamarine;
+  border-radius: 10rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-  .actions {
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    margin: 10px;
-    width: 400px;
-  }
-  
-  button {
-    padding: 15px 32px;
-  }
+.player-info {
+  border: 1px solid #000;
+  padding: 10px;
+  margin-bottom: 10px;
+  background-color: black;
+  color: aliceblue;
+  z-index: 10;
+  border-radius: 0.5rem;
+}
 
-  input {
-    width: 388px;
-    height: 20px;
-  }
-  
+#playerPosition1 {
+  position: absolute;
+  bottom: 25%;
+  right: calc(50% - 5rem);
+  display: flex;
+  flex-direction: column;
+}
+#playerPosition2 {
+  position: absolute;
+  bottom: 34%;
+  left: 17%;
+
+  display: flex;
+  flex-direction: column;
+}
+#playerPosition3 {
+  position: absolute;
+  bottom: 68%;
+  left: 17%;
+  display: flex;
+  flex-direction: column;
+}
+#playerPosition4 {
+  position: absolute;
+  bottom: 75%;
+  right: calc(50% - 5rem);
+  display: flex;
+  flex-direction: column;
+}
+#playerPosition5 {
+  position: absolute;
+  bottom: 68%;
+  right: 17%;
+  display: flex;
+  flex-direction: column;
+}
+#playerPosition6 {
+  position: absolute;
+  bottom: 34%;
+  right: 17%;
+  display: flex;
+  flex-direction: column;
+}
+
+.community-cards {
+  position: relative;
+  display: flex;
+}
+.community-card {
+  height: fit-content;
+  border-radius: 0.3rem;
+  max-height: 7rem;
+  border: 2px solid #000;
+  background-color: #fff;
+}
+
+.player-cards {
+  display: flex;
+}
+
+.player-card {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  border: 2px solid #000;
+  border-radius: 0.3rem;
+  width: auto;
+  max-height: 7rem;
+  background-color: #fff;
+  transform: translateY(50%);
+}
+.actions {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  margin: 10px;
+  font-size: 1rem;
+}
+
+.hidden {
+  display: none;
+}
+
+button {
+  margin: 0 1rem;
+  padding: 3rem;
+  border-radius: 3rem;
+  font-size: 2rem;
+  background-color: brown;
+}
+
+button:hover {
+  background-color: #750000;
+  color: #fff;
+}
+button:active {
+  background-color: #000;
+  color: #fff;
+  transform: translateY(2px);
+}
+
+input {
+  height: 5rem;
+  font-size: large;
+}
