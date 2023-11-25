@@ -6,6 +6,7 @@
 
 body {
   font-family: Arial, sans-serif;
+  background-color: rgb(172, 172, 172);
 }
 
 nav {
@@ -40,14 +41,17 @@ img {
   margin: 2rem auto;
   border: 2px solid #000;
   padding: 20px;
-  background-color: aquamarine;
+  background-color: rgb(46, 188, 82);
   border-radius: 10rem;
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
+
 }
 
-.player-info {
+.player-info-wrapper {
+  display: flex;
   border: 1px solid #000;
   padding: 10px;
   margin-bottom: 10px;
@@ -55,6 +59,16 @@ img {
   color: aliceblue;
   z-index: 10;
   border-radius: 0.5rem;
+}
+.player-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 0 1rem;
+}
+.player-action {
+  margin-top: 1rem ;
 }
 
 #playerPosition1 {
@@ -111,6 +125,10 @@ img {
   max-height: 7rem;
   border: 2px solid #000;
   background-color: #fff;
+}
+.pot {
+  display: flex;
+  flex-direction: column;
 }
 
 .player-cards {

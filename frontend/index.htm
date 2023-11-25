@@ -32,9 +32,12 @@
           />
         </div>
       </div>
-      <div class="player-info">
-        <div class="player-name">YOU</div>
-        <div class="chip-count">10000$</div>
+      <div class="player-info-wrapper">
+        <div class="player-info">
+          <div class="player-name">YOU</div>
+          <div class="chip-count">10000$</div>
+        </div>
+        <p class="player-action">Bet: <br> 1000$</p>
       </div>
     </div>
 
@@ -55,12 +58,14 @@
           />
         </div>
       </div>
-      <div class="player-info">
-        <div class="player-name">YOU</div>
-        <div class="chip-count">10000$</div>
+      <div class="player-info-wrapper">
+        <div class="player-info">
+          <div class="player-name">YOU</div>
+          <div class="chip-count">10000$</div>
+        </div>
+        <p class="player-action">Bet: <br> 1000$</p>
       </div>
     </div>
-
     <div class="player-wrapper" id="playerPosition3">
       <div class="player-cards">
         <div class="card" id="card1">
@@ -78,9 +83,12 @@
           />
         </div>
       </div>
-      <div class="player-info">
-        <div class="player-name">YOU</div>
-        <div class="chip-count">10000$</div>
+      <div class="player-info-wrapper">
+        <div class="player-info">
+          <div class="player-name">YOU</div>
+          <div class="chip-count">10000$</div>
+        </div>
+        <p class="player-action">Bet: <br> 1000$</p>
       </div>
     </div>
 
@@ -101,9 +109,12 @@
           />
         </div>
       </div>
-      <div class="player-info">
-        <div class="player-name">YOU</div>
-        <div class="chip-count">10000$</div>
+      <div class="player-info-wrapper">
+        <div class="player-info">
+          <div class="player-name">YOU</div>
+          <div class="chip-count">10000$</div>
+        </div>
+        <p class="player-action">Bet: <br> 1000$</p>
       </div>
     </div>
 
@@ -124,9 +135,12 @@
           />
         </div>
       </div>
-      <div class="player-info">
-        <div class="player-name">YOU</div>
-        <div class="chip-count">10000$</div>
+      <div class="player-info-wrapper">
+        <div class="player-info">
+          <div class="player-name">YOU</div>
+          <div class="chip-count">10000$</div>
+        </div>
+        <p class="player-action">Bet: <br> 1000$</p>
       </div>
     </div>
 
@@ -147,47 +161,55 @@
           />
         </div>
       </div>
-      <div class="player-info">
-        <div class="player-name">YOU</div>
-        <div class="chip-count">10000$</div>
+      <div class="player-info-wrapper">
+        <div class="player-info">
+          <div class="player-name">YOU</div>
+          <div class="chip-count">10000$</div>
+        </div>
+        <p class="player-action">Bet: <br> 1000$</p>
       </div>
     </div>
 
     <div class="table">
+      <div class="pot">
+        <img
+          src="assets/chips/casino-chip-composition-3d-design-elements-free-png.png"
+          alt="chips"
+        />
+        Pot: 0$
+      </div>
       <div class="community-cards">
         <!-- Display community cards here -->
 
-          <img
-            src="assets/cards/queen_of_clubs.png"
-            class="community-card"
-            alt="2 of clubs"
-          />
+        <img
+          src="assets/cards/queen_of_clubs.png"
+          class="community-card"
+          alt="2 of clubs"
+        />
 
-          <img
-            src="assets/cards/jack_of_clubs.png"
-            class="community-card"
-            alt="2 of clubs"
-          />
+        <img
+          src="assets/cards/jack_of_clubs.png"
+          class="community-card"
+          alt="2 of clubs"
+        />
 
-          <img
-            src="assets/cards/10_of_clubs.png"
-            class="community-card"
-            alt="2 of clubs"
-          />
+        <img
+          src="assets/cards/10_of_clubs.png"
+          class="community-card"
+          alt="2 of clubs"
+        />
 
-          <img
-            src="assets/cards/4_of_hearts.png"
-            class="community-card"
-            alt="2 of clubs"
-          />
+        <img
+          src="assets/cards/4_of_hearts.png"
+          class="community-card"
+          alt="2 of clubs"
+        />
 
-
-          <img
-            src="assets/cards/ace_of_diamonds.png"
-            class="community-card"
-            alt="2 of clubs"
-          />
-
+        <img
+          src="assets/cards/ace_of_diamonds.png"
+          class="community-card"
+          alt="2 of clubs"
+        />
       </div>
     </div>
 
@@ -197,11 +219,17 @@
       <button id="checkBtn" class="hidden">Check</button>
       <button id="callBtn" class="hidden">Call</button>
       <button id="raiseBtn" class="hidden">Raise</button>
-      <input type="number"  class="hidden" id="raiseInput" placeholder="Amount" , min="2" />
+      <input
+        type="number"
+        class="hidden"
+        id="raiseInput"
+        placeholder="Amount"
+        ,
+        min="2"
+      />
     </div>
 
     <script src="js/script.js"></script>
     <script src="js/handler.js"></script>
-
   </body>
 </html>
