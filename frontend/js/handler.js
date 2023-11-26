@@ -104,7 +104,7 @@ function sendMessage(action, amount = 0 ){
         action: action, // "bet" / "fold"
         amount: amount,
     };
-
+ü
         if (socket.readyState === WebSocket.OPEN) {
 
             socket.send(JSON.stringify(message));        } else {
