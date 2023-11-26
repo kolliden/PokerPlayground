@@ -158,6 +158,17 @@ img {
   display: none;
 }
 
+.active {
+  animation: blinker 1s ease-in-out infinite;
+
+}
+
+@keyframes blinker {
+  50% {
+    background-color: rgb(113, 113, 113);
+  }
+}
+
 button {
   margin: 0 1rem;
   padding: 3rem;

@@ -200,9 +200,9 @@ function updateTable() {
         playerHTML.querySelector(".player-info-wrapper").querySelector(".player-action").textContent = player.playerAction;
 
         if (player.playerTurn) {
-            playerHTML.querySelector(".player-info-wrapper").querySelector(".player-action").classList.add("active");
+            playerHTML.querySelector(".player-info-wrapper").classList.add("active");
         } else {
-            playerHTML.querySelector(".player-info-wrapper").querySelector(".player-action").classList.remove("active");
+            playerHTML.querySelector(".player-info-wrapper").classList.remove("active");
         }
         // if (player.button) {
         //     table.querySelector(".player-button").style.transform = 'rotate(' + i * 45 + 'deg)';
