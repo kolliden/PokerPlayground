@@ -30,3 +30,6 @@ class Player:
 
 	def fold(self):
 		self.in_round = False
+
+	def giveCardsToPlayers():
+		return [[get(), get()], [get(), get()], [get(), get()], [get(), get()], [get(), get()], [get(), get()]]
