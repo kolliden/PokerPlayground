@@ -46,19 +46,3 @@ def betting():
 										]
 									}
 					waiter.socket.sendall(json.dumps(data_to_show).encode())
-
-
-
-	for player in players:
-		makeBet()
-	info = None
-	if "get:" in data:
-		info = data.split("get:")[1].strip()
-		player.data(info)
-	elif "fold:" in data:
-		info = data.split("fold:")[1].strip()
-
-	if info is not None:
-		print(f"Received from {player_socket.getpeername()}: {info}")
-	else:
-		pass
