@@ -1,7 +1,11 @@
 from functions import *
 import json
 import threading
-import socket_for_poker
+import socket
+
+server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+server_address = ('127.0.0.1', 8089)  # Replace with desired address and port
+server_socket.bind(server_address)
 
 players = []
 currBet = 0
@@ -40,12 +44,14 @@ def game_start():
 	curr = dealer
 	poker_deck = [str(rank)+str(suit) for suit in suits for rank in ranks]
 	used_cards = []
-	while len(players) < 1:
-		server_socket.listen(1)
-		client_socket, address = server_socket.accept()
-		client_handler = threading.Thread(target=handle_client_connection, args=(client_socket, players[0]))
-		client_handler.start()
-	
+	for _ in range(0, 1):
+		try:
+			server_socket.listen(1)
+			client_socket, address = server_socket.accept()
+			client_handler = threading.Thread(target=handle_client_connection, args=(client_socket, players[0]))
+			client_handler.start()
+		except Exception as e:
+			print(e)
 	res = []
 	for player in players:
 		res.append(player.hand)
