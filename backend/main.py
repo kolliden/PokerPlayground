@@ -1,7 +1,6 @@
 from functions import *
 import json
 import threading
-import socket_for_poker
 
 players = []
 currBet = 0
