@@ -28,7 +28,7 @@ let gameState = {
         chips: 2000,
         cards: ["KH", "AH"],
         playerTurn: true,
-        playerAction: "Bet 12412",
+        playerAction: "Small Blind: 1$",
         button: true,
     }, {
         playerID: 9999,
@@ -36,7 +36,7 @@ let gameState = {
         chips: 2000,
         cards: [null,null],
         playerTurn: false,
-        playerAction: "Bet 12412",
+        playerAction: "Big Blind: 2$",
         button: false,
     },
     {
@@ -45,7 +45,7 @@ let gameState = {
         chips: 2000,
         cards: [null,null],
         playerTurn: false,
-        playerAction: "Bet 12412",
+        playerAction: "Bet: 4.5$",
         button: false,
     },
     {
@@ -54,7 +54,7 @@ let gameState = {
         chips: 2000,
         cards: [null,null],
         playerTurn: false,
-        playerAction: "Bet 12412",
+        playerAction: "Fold",
         button: false,
     }, {
         playerID: 9999,
@@ -62,7 +62,7 @@ let gameState = {
         chips: 2000,
         cards: [null,null],
         playerTurn: false,
-        playerAction: "Bet 12412",
+        playerAction: "call 4.5$",
         button: false,
     }, {
         playerID: 9999,
@@ -70,7 +70,7 @@ let gameState = {
         chips: 2000,
         cards: [null,null],
         playerTurn: false,
-        playerAction: "Bet 12412",
+        playerAction: "Raise: 9$",
         button: false,
     }
     ],
@@ -269,12 +269,7 @@ socket.onmessage = (event) => {
     console.log('Received data:', data);
 
     // Handle WebSocket data
-    if (data.action == "update") {
-        // update game state
-        // update player state
-        // update buttons
-        // update table
-    }
+    console.log('Received data:', data);
 };
 
 let playerID = 1

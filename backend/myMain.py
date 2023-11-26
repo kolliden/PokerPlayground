@@ -1,7 +1,24 @@
 import asyncio
 import websockets
-import give_card
-from functions.py import *
+from random import randrange
+
+suits = ['H', 'D', 'C', 'S']
+ranks = ['2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A']
+
+# Generate a list of all poker cards
+poker_deck = [str(rank)+str(suit) for suit in suits for rank in ranks]
+used_cards = []
+
+def get():
+	i = randrange(0, len(poker_deck))
+	used_cards.append(poker_deck[i])
+	del poker_deck[i]
+	return used_cards[-1]
+
+
+def giveCardsToPlayers():
+    return [[get(), get()], [get(), get()], [get(), get()], [get(), get()], [get(), get()], [get(), get()]]
+
 
 ip = "localhost"
 port = 8080

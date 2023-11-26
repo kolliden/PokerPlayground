@@ -114,6 +114,10 @@ img {
   display: flex;
   flex-direction: column;
 }
+.pot {
+  margin-top: 5rem;
+}
+
 
 .community-cards {
   position: relative;
@@ -188,6 +192,9 @@ button:active {
 }
 
 input {
-  height: 5rem;
+  height: 7rem;
   font-size: large;
+  border-radius: 3rem;
+  justify-content: center;
+  align-items: center;
 }
