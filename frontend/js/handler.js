@@ -23,6 +23,7 @@ const table = document.getElementsByClassName("table");
 
 let gameState = {
     players: [{
+        playerID: 9999,
         name: "YOU",
         chips: 2000,
         cards: [],
@@ -30,6 +31,7 @@ let gameState = {
         playerAction: "Bet 12412",
         button: true,
     }, {
+        playerID: 9999,
         name: "Poker God1224",
         chips: 2000,
         cards: [],
@@ -38,6 +40,7 @@ let gameState = {
         button: false,
     },
     {
+        playerID: 9999,
         name: "FishOfPoker",
         chips: 2000,
         cards: [],
@@ -46,6 +49,7 @@ let gameState = {
         button: false,
     },
     {
+        playerID: 9999,
         name: "MegaShark",
         chips: 2000,
         cards: [],
@@ -53,6 +57,7 @@ let gameState = {
         playerAction: "Bet 12412",
         button: false,
     }, {
+        playerID: 9999,
         name: "WinnerWinner",
         chips: 2000,
         cards: [],
@@ -60,6 +65,7 @@ let gameState = {
         playerAction: "Bet 12412",
         button: false,
     }, {
+        playerID: 9999,
         name: "Runner6000",
         chips: 2000,
         cards: [],
