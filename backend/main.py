@@ -45,6 +45,7 @@ def game_start():
 	poker_deck = [str(rank)+str(suit) for suit in suits for rank in ranks]
 	used_cards = []
 	while len(players) < 1:
+		server_socket.listen(1)
 		client_socket, address = server_socket.accept()
 		client_handler = threading.Thread(target=handle_client_connection, args=(client_socket, players[0]))
 		client_handler.start()
