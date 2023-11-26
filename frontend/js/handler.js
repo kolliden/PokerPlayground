@@ -76,7 +76,7 @@ let gameState = {
     ],
     pot: 0,
     board: ["AD", "AC", "TH", null, null],
-    lastBet: 0,
+    lastBet: 9,
 }
 
 function stopGame() {
