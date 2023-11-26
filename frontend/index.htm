@@ -211,14 +211,18 @@
           alt="2 of clubs"
         />
       </div>
+
+      <div class="dealer-button">
+        <img src="assets/dealer-button.png" alt="dealer button" />
+      </div>
     </div>
 
     <div class="actions">
-      <button id="foldBtn" class="hidden">Fold</button>
-      <button id="checkBtn" class="hidden">Check</button>
-      <button id="betBtn" class="hidden">Bet</button>
-      <button id="callBtn" class="hidden">Call</button>
-      <button id="raiseBtn" class="hidden">Raise</button>
+      <button id="foldBtn" class="hidden" onclick="fold()">Fold</button>
+      <button id="checkBtn" class="hidden"  onclick="check()">Check</button>
+      <button id="betBtn" class="hidden"  onclick="bet()">Bet</button>
+      <button id="callBtn" class="hidden"  onclick="call()">Call</button>
+      <button id="raiseBtn" class="hidden" onclick="raise()" >Raise</button>
       <input
         type="number"
         class="hidden"
