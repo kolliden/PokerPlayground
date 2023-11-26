@@ -1,7 +1,7 @@
 from random import randrange
 
-suits = ['Hearts', 'Diamonds', 'Clubs', 'Spades']
-ranks = ['02', '03', '04', '05', '06', '07', '08', '09', '10', 'Ja', 'Qu', 'Ki', 'Ac']
+suits = ['H', 'D', 'C', 'S']
+ranks = ['2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A']
 
 # Generate a list of all poker cards
 poker_deck = [str(rank)+str(suit) for suit in suits for rank in ranks]
@@ -14,7 +14,8 @@ def get():
 	return used_cards[-1]
 	
 class Player:
-    def __init__(self, name):
+    def __init__(self, name, connection):
+		self.socket = connection
         self.name = name
         self.chips = 100
         self.hand = [get(), get()]
