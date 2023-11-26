@@ -1,15 +1,13 @@
 from functions import *
-import socket
 import json
 import socket_for_poker
-import websockets
 
 players = []
 currBet = 0
 dealer = -1
 Bets = []
 
-def game_start(message: str):
+def game_start():
 	Bets = []
 	currBet = 10
 	dealer += 1
