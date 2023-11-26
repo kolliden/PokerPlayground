@@ -14,19 +14,19 @@ def get():
 	return used_cards[-1]
 
 class Player:
-    def __init__(self, name, connection):
-        self.socket = connection
-        self.name = name
-        self.chips = 100
-        self.hand = [get(), get()]
-        self.in_round = True
+	def __init__(self, name, connection):
+		self.socket = connection
+		self.name = name
+		self.chips = 100
+		self.hand = [get(), get()]
+		self.in_round = True
 
-    def bet(self, amount):
-        self.in_round = True
-        if amount > self.chips:
-            return False
-        self.chips -= amount
-        return True
+	def bet(self, amount):
+		self.in_round = True
+		if amount > self.chips:
+			return False
+		self.chips -= amount
+		return True
 
-    def fold(self):
-        self.in_round = False
+	def fold(self):
+		self.in_round = False
