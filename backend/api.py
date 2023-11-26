@@ -8,34 +8,7 @@ currBet
 dealer = -1
 Bets = []
 
-def enemies_move(enemie):
-	if players[enemie].in_game == False:
-		pass
-	probability = randrange(0, 20)
-	match probability:
-		case p if p < 4:
-			players[enemie].fold()
-		case 20:
-			if players[enemie].chips > currBet:
-				players[enemie].bet(min(players[enemie].chips, currBet*3))
-			return;
-		case p2 if p2 > 17:
-			if players[enemie].chips > currBet:
-				players[enemie].bet(min(players[enemie].chips, currBet*2,5))
-			return;
-		case p2 if p2 > 13:
-			if players[enemie].chips > currBet:
-				players[enemie].bet(min(players[enemie].chips, currBet*2))
-			return;
-		case p2 if p2 > 8:
-			if players[enemie].chips > currBet:
-				players[enemie].bet(min(players[enemie].chips, currBet*1,5))
-			return;
-		case _:
-			if players[enemie].chips > currBet:
-				players[enemie].bet(currBet)
-
-server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM) #to delete
 server_socket.bind(("0.0.0.0", 8080))
 
 def game_start(message: str):
@@ -69,7 +42,7 @@ def betting():
 				for waiter in players:
 					data_to_show = { 'name': {waiter.name},
 									 'chips': {waiter.chips},
-									 'cards': [Null, Null],
+									 'cards': waiter.hand,
 									 'playerTurn': False,
 									 'playerAction': [
 										 data["action"],
