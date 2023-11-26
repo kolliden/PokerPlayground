@@ -1,7 +1,11 @@
 from functions import *
 import json
 import threading
-import socket_for_poker
+import socket
+
+server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+server_address = ('localhost', 8080)  # Replace with desired address and port
+server_socket.bind(server_address)
 
 players = []
 currBet = 0
@@ -15,7 +19,7 @@ def handle_client_connection(client_socket, player):
 	# Add the player to the list
 	players.append(client_socket)
 
-	print(f"New player connected: {client_socket.getpeername()}")
+	print("New player connected")
 
 	while True:
 		data = client_socket.recv(1024)
@@ -30,7 +34,7 @@ def handle_client_connection(client_socket, player):
 
     # Remove the player from the list when the connection is closed
 	players.remove(client_socket)
-	print(f"Player {client_socket.getpeername()} disconnected")
+	print("Player disconnected")
 
 def game_start():
 	Bets = []
@@ -41,7 +45,7 @@ def game_start():
 	poker_deck = [str(rank)+str(suit) for suit in suits for rank in ranks]
 	used_cards = []
 	while len(players) < 1:
-		client_socket, address = server_socket.accept()
+		client_socket, server_address = server_socket.accept()
 		client_handler = threading.Thread(target=handle_client_connection, args=(client_socket, players[0]))
 		client_handler.start()
 	
