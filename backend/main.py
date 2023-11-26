@@ -4,7 +4,7 @@ import threading
 import socket
 
 server_socket = socket.socket()
-server_address = ('127.0.0.1', 8089)  # Replace with desired address and port
+server_address = ('0.0.0.0', 8089)  # Replace with desired address and port
 server_socket.bind(server_address)
 
 players = []
@@ -26,7 +26,7 @@ def handle_client_connection(client_socket, player):
 		if not data:
 			break
 		else:
-			betting(player, data)
+			betting(players[player], data)
 	# Handle data received from the client if needed
 
 	# Close the client socket
@@ -48,7 +48,7 @@ def game_start():
 		try:
 			server_socket.listen(1)
 			client_socket, address = server_socket.accept()
-			client_handler = threading.Thread(target=handle_client_connection, args=(client_socket, players[0]))
+			client_handler = threading.Thread(target=handle_client_connection, args=(client_socket, 0))
 			client_handler.start()
 		except Exception as e:
 			print(e)
