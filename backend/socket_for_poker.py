@@ -4,10 +4,10 @@ import asyncio
 import websockets
 import os
 
-async def echo(websocket, path):
-    async for message in websocket:
+async def echo(websockets, path):
+    async for message in websockets:
         print ("Received and echoing message: "+message, flush=True)
-        await websocket.send(message)
+        await websockets.send(message)
 
 
 

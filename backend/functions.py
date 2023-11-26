@@ -12,10 +12,10 @@ def get():
 	used_cards.append(poker_deck[i])
 	del poker_deck[i]
 	return used_cards[-1]
-	
+
 class Player:
     def __init__(self, name, connection):
-		self.socket = connection
+        self.socket = connection
         self.name = name
         self.chips = 100
         self.hand = [get(), get()]

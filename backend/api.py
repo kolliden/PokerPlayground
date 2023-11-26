@@ -1,15 +1,13 @@
 from functions import *
 import socket
 import json
+import socket_for_poker
+import websockets
 
-app = FastAPI()
-players
-currBet
+players = []
+currBet = 0
 dealer = -1
 Bets = []
-
-server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM) #to delete
-server_socket.bind(("0.0.0.0", 8080))
 
 def game_start(message: str):
 	Bets = []
@@ -20,9 +18,9 @@ def game_start(message: str):
 	players = [Player(message), Player("Bot1"), Player("Bot2")]
 	while len(players) < 2:
 		pass #listening accepting new guys
-	
+
 	amountPlayers = len(players)
-	
+
 	res = []
 	for player in players:
 		res.append(player.hand)
@@ -31,7 +29,7 @@ def game_start(message: str):
 def betting():
 	for player in range(dealer, dealer+len(players)):
 		currPlayer = players[player%len(players)]
-		
+
 		currPlayer.socket.sendall("playerTurn: true\nBlind: false\nBets: "+Bets+"\n")
 		while True:
 			data = currPlayer.socket.recv(10240000).decode()
@@ -41,18 +39,18 @@ def betting():
 				data["playerID"]
 				for waiter in players:
 					data_to_show = { 'name': {waiter.name},
-									 'chips': {waiter.chips},
-									 'cards': waiter.hand,
-									 'playerTurn': False,
-									 'playerAction': [
-										 data["action"],
-										 int(data["amount"])
+									'chips': {waiter.chips},
+									'cards': waiter.hand,
+									'playerTurn': False,
+									'playerAction': [
+										data["action"],
+										int(data["amount"])
 										]
-								   }
+									}
 					waiter.socket.sendall(json.dumps(data_to_show).encode())
-				
-	
-	
+
+
+
 	for player in players:
 		makeBet()
 	info = None
