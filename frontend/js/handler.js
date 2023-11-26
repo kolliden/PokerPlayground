@@ -1,4 +1,8 @@
-// const actions = ["fold", "check", "call", "raise"]
+const gameID = 1; // Example game ID
+const socket = new WebSocket(`ws://localhost:8080/`, );
+
+//connect websocket
+
 
 const callBtn = document.getElementById("callBtn");
 const raiseBtn = document.getElementById("raiseBtn");
@@ -88,13 +92,19 @@ function getPossibleActions() {
     return possibeActions;
 }
 
-function sendMessage(action, amount = 0){
+function sendMessage(action, amount = 0 ){
     const message = {
         playerID: playerID,
         action: action, // "bet" / "fold"
         amount: amount,
     };
-    socket.send(JSON.stringify(message));
+
+        if (socket.readyState === WebSocket.OPEN) {
+
+            socket.send(JSON.stringify(message));        } else {
+            console.warn("websocket is not connected");
+        }
+
 }
 
 function fold() {
@@ -110,11 +120,11 @@ function check() {
 }
 
 function raise() {
-    sendMessage("bet", raiseInput.amount);
+    sendMessage("bet", raiseInput.value);
 }
 
 function bet() {
-    sendMessage("bet", raiseInput.amount);
+    sendMessage("bet", raiseInput.value);
 }
 
 function updateButtons(possibeActions) {
@@ -229,10 +239,6 @@ var myInterval = setInterval(mainLoop, 1000);
 //   console.error('Error:', error);
 // });
 
-
-const gameID = 1; // Example game ID
-const socket = new WebSocket(`ws://10.0.1.215:8080/api/game/${gameID}/`);
-
 socket.onopen = () => {
     console.log('WebSocket connected');
 };
@@ -257,9 +263,4 @@ socket.onmessage = (event) => {
 
 let playerID = 1
 // Sending a message through WebSocket
-const message = {
-    playerID: playerID,
-    action: 'bet', // "bet" / "fold"
-    amount: 30,
-};
-socket.send(JSON.stringify(message));
+sendMessage("join", playerID);
