@@ -1,6 +1,7 @@
 import asyncio
 import websockets
 import give_card
+from functions.py import *
 
 ip = "localhost"
 port = 8080
@@ -48,7 +49,7 @@ async def game(websocket, path):
 
         while True:
             # Your poker game logic goes here
-            card_pairs = give_cards_to_players()
+            card_pairs = giveCardsToPlayers()
             send_cards_to_players(card_pairs)
 
             # For example:
