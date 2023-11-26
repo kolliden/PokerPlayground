@@ -26,7 +26,7 @@ let gameState = {
         playerID: 9999,
         name: "YOU",
         chips: 2000,
-        cards: [],
+        cards: ["KH", "AH"],
         playerTurn: true,
         playerAction: "Bet 12412",
         button: true,
@@ -34,7 +34,7 @@ let gameState = {
         playerID: 9999,
         name: "Poker God1224",
         chips: 2000,
-        cards: [],
+        cards: [null,null],
         playerTurn: false,
         playerAction: "Bet 12412",
         button: false,
@@ -43,7 +43,7 @@ let gameState = {
         playerID: 9999,
         name: "FishOfPoker",
         chips: 2000,
-        cards: [],
+        cards: [null,null],
         playerTurn: false,
         playerAction: "Bet 12412",
         button: false,
@@ -52,7 +52,7 @@ let gameState = {
         playerID: 9999,
         name: "MegaShark",
         chips: 2000,
-        cards: [],
+        cards: [null,null],
         playerTurn: false,
         playerAction: "Bet 12412",
         button: false,
@@ -60,7 +60,7 @@ let gameState = {
         playerID: 9999,
         name: "WinnerWinner",
         chips: 2000,
-        cards: [],
+        cards: [null,null],
         playerTurn: false,
         playerAction: "Bet 12412",
         button: false,
@@ -68,14 +68,14 @@ let gameState = {
         playerID: 9999,
         name: "Runner6000",
         chips: 2000,
-        cards: [],
+        cards: [null,null],
         playerTurn: false,
         playerAction: "Bet 12412",
         button: false,
     }
     ],
     pot: 0,
-    board: [],
+    board: ["AD", "AC", "TH", null, null],
     lastBet: 0,
 }
 
@@ -104,7 +104,6 @@ function sendMessage(action, amount = 0 ){
         action: action, // "bet" / "fold"
         amount: amount,
     };
-ü
         if (socket.readyState === WebSocket.OPEN) {
 
             socket.send(JSON.stringify(message));        } else {
@@ -165,12 +164,30 @@ function updateButtons(possibeActions) {
 }
 
 function updateTable() {
-    for (var i = 0; i < gameState.board.length; i++) {
+    for (var i = 0; i <= 4; i++) {
         let card = gameState.board[i];
-        let cardHTML = document.getElementById("card" + i);
+        let cardHTML = document.getElementById("comm-card" + (i+1).toString());
         cardHTML.classList.remove("hidden");
+        if (card == null) {
+            cardHTML.classList.add("hidden");
+        }   else {
+            cardHTML.classList.remove("hidden");
         cardHTML.src = "assets/cards/" + card + ".png";
+
+        }
     }
+
+
+    let card1HTML = document.getElementById("active-playercard1");
+    let card2HTML = document.getElementById("active-playercard2");
+
+    // print(gameState.players[0].cards[0])
+    // print(gameState.players[0].cards[1])
+
+    card1HTML.classList.remove("hidden");
+    card2HTML.classList.remove("hidden");
+    card1HTML.src = "assets/cards/" + gameState.players[0].cards[0] + ".png";
+    card2HTML.src = "assets/cards/" + gameState.players[0].cards[1] + ".png";
 
     for (var i = 0; i < gameState.players.length; i++) {
         let player = gameState.players[i];
@@ -179,14 +196,7 @@ function updateTable() {
         playerHTML.classList.remove("hidden");
 
         playerNameHtml.textContent = player.name;
-        // playerHTML.innerHTML = player.name + " " + player.chips + " " + player.playerAction;
-        // let card1HTML = document.getElementById("card" + i + "1");
-        // let card2HTML = document.getElementById("card" + i + "2");
 
-        // card1HTML.classList.remove("hidden");
-        // card2HTML.classList.remove("hidden");
-        // card1HTML.src = "assets/cards/" + player.cards[0] + ".png";
-        // card2HTML.src = "assets/cards/" + player.cards[1] + ".png";
         playerHTML.querySelector(".player-info-wrapper").querySelector(".player-action").textContent = player.playerAction;
 
         if (player.playerTurn) {
