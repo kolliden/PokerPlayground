@@ -406,7 +406,7 @@ async function applyGameRules(gameID) {
                 }
                 // set the blinds
                 if (game.players.length === 2) {
-                    const smallBlindIndex = game.players.findIndex((player) => player._id === game.button);
+                    let smallBlindIndex = game.players.findIndex((player) => player._id === game.button);
                     let bigBlindIndex = smallBlindIndex + 1;
                     if(bigBlindIndex === game.players.length) bigBlindIndex = 0;
 
@@ -414,7 +414,7 @@ async function applyGameRules(gameID) {
                     game.players[bigBlindIndex].betAmount = 2;
                     game.players[smallBlindIndex].betAmount = 1;
                 } else {
-                    const smallBlindIndex = game.players.findIndex((player) => player._id === game.button) + 1;
+                    let smallBlindIndex = game.players.findIndex((player) => player._id === game.button) + 1;
                     let bigBlindIndex = smallBlindIndex + 2;
                     if(bigBlindIndex === game.players.length) bigBlindIndex = 0;
                     if(bigBlindIndex === game.players.length + 1) bigBlindIndex = 1;
