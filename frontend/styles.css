@@ -47,6 +47,7 @@ img {
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  position: relative;
 
 }
 
@@ -70,50 +71,37 @@ img {
 .player-action {
   margin-top: 1rem ;
 }
+.player-wrapper {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+}
 
 #playerPosition1 {
-  position: absolute;
-  bottom: 25%;
-  right: calc(50% - 5rem);
-  display: flex;
-  flex-direction: column;
+  bottom: -3rem;
 }
-#playerPosition2 {
-  position: absolute;
-  bottom: 34%;
-  left: 17%;
 
-  display: flex;
-  flex-direction: column;
+#playerPosition2 {
+  bottom: -3rem;
+  left: 0;
 }
 #playerPosition3 {
-  position: absolute;
-  bottom: 68%;
-  left: 17%;
-  display: flex;
-  flex-direction: column;
+  top:-4rem;
+  left: 0;
 }
 #playerPosition4 {
-  position: absolute;
-  bottom: 75%;
-  right: calc(50% - 5rem);
-  display: flex;
-  flex-direction: column;
+  top:-4rem;
 }
 #playerPosition5 {
-  position: absolute;
-  bottom: 68%;
-  right: 17%;
-  display: flex;
-  flex-direction: column;
+  top:-4rem;
+  right: 0;
 }
 #playerPosition6 {
-  position: absolute;
-  bottom: 34%;
-  right: 17%;
-  display: flex;
-  flex-direction: column;
+  bottom: -3rem;
+  right: 0;
 }
+
+
 .pot {
   margin-top: 5rem;
 }
@@ -143,12 +131,13 @@ img {
   position: relative;
   display: flex;
   flex-direction: row;
-  border: 2px solid #000;
+  border: 1px solid #000;
   border-radius: 0.3rem;
   width: auto;
   max-height: 7rem;
   background-color: #fff;
-  transform: translateY(50%);
+  transform: translateY(45%);
+  overflow: hidden;
 }
 .actions {
   position: absolute;
@@ -156,6 +145,13 @@ img {
   bottom: 0;
   margin: 10px;
   font-size: 1rem;
+}
+
+.waiting {
+  background-color: rgb(76, 76, 76);
+  border-color: #750000;
+  border: 2px solid #750000;
+  transform: translateY(50px);
 }
 
 .hidden {
@@ -169,7 +165,7 @@ img {
 
 @keyframes blinker {
   50% {
-    background-color: rgb(113, 113, 113);
+    background-color: rgb(126, 103, 103);
   }
 }
 

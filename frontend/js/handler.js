@@ -1,9 +1,3 @@
-const gameID = 1; // Example game ID
-const socket = new WebSocket(`ws://localhost:8080/`, );
-
-//connect websocket
-
-
 const callBtn = document.getElementById("callBtn");
 const raiseBtn = document.getElementById("raiseBtn");
 const raiseInput = document.getElementById("raiseInput");
@@ -19,64 +13,23 @@ const player5 = document.getElementById("playerPosition5");
 const player6 = document.getElementById("playerPosition6");
 
 const table = document.getElementsByClassName("table");
-// console.log("table: " + table);
+const potHtml = document.getElementById("pot-text");
 
 let gameState = {
     players: [{
-        playerID: 9999,
         name: "YOU",
         chips: 2000,
         cards: ["KH", "AH"],
         playerTurn: true,
         playerAction: "Small Blind: 1$",
         button: true,
-    }, {
-        playerID: 9999,
-        name: "Poker God1224",
-        chips: 2000,
-        cards: [null,null],
-        playerTurn: false,
-        playerAction: "Big Blind: 2$",
-        button: false,
-    },
-    {
-        playerID: 9999,
-        name: "FishOfPoker",
-        chips: 2000,
-        cards: [null,null],
-        playerTurn: false,
-        playerAction: "Bet: 4.5$",
-        button: false,
-    },
-    {
-        playerID: 9999,
-        name: "MegaShark",
-        chips: 2000,
-        cards: [null,null],
-        playerTurn: false,
-        playerAction: "Fold",
-        button: false,
-    }, {
-        playerID: 9999,
-        name: "WinnerWinner",
-        chips: 2000,
-        cards: [null,null],
-        playerTurn: false,
-        playerAction: "call 4.5$",
-        button: false,
-    }, {
-        playerID: 9999,
-        name: "Runner6000",
-        chips: 2000,
-        cards: [null,null],
-        playerTurn: false,
-        playerAction: "Raise: 9$",
-        button: false,
-    }
-    ],
+        betAmount: 1,
+        playerConnecting: false,
+        playerWaitingForRoundStart: false,
+    }],
     pot: 0,
-    board: ["AD", "AC", "TH", null, null],
-    lastBet: 9,
+    board: [null, null, null, null, null],
+    controllerPlayerIndex:0,
 }
 
 function stopGame() {
@@ -85,8 +38,18 @@ function stopGame() {
 // check what actions are possible
 function getPossibleActions() {
     let possibeActions = [];
-    if (gameState.players[0].playerTurn) {
-        if (gameState.lastBet == 0) {
+    let previousPlayerIndex = gameState.controllingPlayerIndex - 1;
+    if (previousPlayerIndex === -1) previousPlayerIndex = gameState.players.length - 1;
+
+    biggestBet = 0;
+    for (var i = 0; i < gameState.players.length; i++) {
+        if (gameState.players[i].betAmount > biggestBet) {
+            biggestBet = gameState.players[i].betAmount;
+        }
+    }
+
+    if (gameState.players[gameState.controllingPlayerIndex].playerTurn) {
+        if (!biggestBet && !gameState.players[gameState.controllingPlayerIndex].betAmount || gameState.players[gameState.controllingPlayerIndex].betAmount === gameState.players[previousPlayerIndex].betAmount || gameState.players[previousPlayerIndex].betAmount === 0) {
             possibeActions.push("check");
             possibeActions.push("bet");
         } else {
@@ -98,18 +61,19 @@ function getPossibleActions() {
     return possibeActions;
 }
 
-function sendMessage(action, amount = 0 ){
+function sendMessage(action, amount = 0) {
     const message = {
-        playerID: playerID,
-        action: action, // "bet" / "fold"
-        amount: amount,
+        data: {
+            action: action, // "bet" / "fold"
+            amount: amount,
+            eventType: "playerAction",
+        },
     };
-        if (socket.readyState === WebSocket.OPEN) {
-
-            socket.send(JSON.stringify(message));        } else {
-            console.warn("websocket is not connected");
-        }
-
+    if (socket.readyState === WebSocket.OPEN) {
+        socket.send(JSON.stringify(message));
+    } else {
+        console.warn("websocket is not connected");
+    }
 }
 
 function fold() {
@@ -117,7 +81,17 @@ function fold() {
 }
 
 function call() {
-    sendMessage("bet", gameState.lastBet);
+    let biggestBet = 0;
+    for (var i = 0; i < gameState.players.length; i++) {
+        if (gameState.players[i].betAmount > biggestBet) {
+            biggestBet = gameState.players[i].betAmount;
+        }
+    }
+    if (gameState.players[gameState.controllingPlayerIndex].betAmount){
+        sendMessage("bet", biggestBet - gameState.players[gameState.controllingPlayerIndex].betAmount);
+    } else {
+        sendMessage("bet", biggestBet);
+    }
 }
 
 function check() {
@@ -153,6 +127,7 @@ function updateButtons(possibeActions) {
         raiseBtn.classList.remove("hidden");
         raiseInput.classList.remove("hidden");
     } else {
+        raiseBtn.classList.add("hidden");
         raiseInput.classList.add("hidden");
     }
     if (possibeActions.includes("bet")) {
@@ -166,36 +141,50 @@ function updateButtons(possibeActions) {
 function updateTable() {
     for (var i = 0; i <= 4; i++) {
         let card = gameState.board[i];
-        let cardHTML = document.getElementById("comm-card" + (i+1).toString());
+        let cardHTML = document.getElementById("comm-card" + (i + 1).toString());
+        potHtml.textContent = gameState.pot;
+
         cardHTML.classList.remove("hidden");
         if (card == null) {
             cardHTML.classList.add("hidden");
-        }   else {
+        } else {
             cardHTML.classList.remove("hidden");
-        cardHTML.src = "assets/cards/" + card + ".png";
+            cardHTML.src = "assets/cards/" + card + ".png";
 
         }
     }
 
-
-    let card1HTML = document.getElementById("active-playercard1");
-    let card2HTML = document.getElementById("active-playercard2");
-
-    // print(gameState.players[0].cards[0])
-    // print(gameState.players[0].cards[1])
-
-    card1HTML.classList.remove("hidden");
-    card2HTML.classList.remove("hidden");
-    card1HTML.src = "assets/cards/" + gameState.players[0].cards[0] + ".png";
-    card2HTML.src = "assets/cards/" + gameState.players[0].cards[1] + ".png";
-
     for (var i = 0; i < gameState.players.length; i++) {
-        let player = gameState.players[i];
-        let playerHTML = document.getElementById("playerPosition" + (i + 1).toString());
-        let playerNameHtml = playerHTML.querySelector(".player-info-wrapper").querySelector(".player-info").querySelector(".player-name");
+        const player = gameState.players[i];
+        const playerHTML = document.getElementById("playerPosition" + (i + 1).toString());
+        const playerNameHtml = playerHTML.querySelector(".player-info-wrapper").querySelector(".player-info").querySelector(".player-name");
+        const playerActionHTML = playerHTML.querySelector(".player-info-wrapper").querySelector(".player-action");
+        const playerChipCountHTML = playerHTML.querySelector(".player-info-wrapper").querySelector(".player-info").querySelector(".chip-count");
+
+        playerChipCountHTML.textContent = player.chips.toString();
+        if (player.playerAction){
+            playerActionHTML.textContent = player.playerAction.toString();
+        } else {
+            playerActionHTML.textContent = "";
+        }
+
         playerHTML.classList.remove("hidden");
+        playerHTML.querySelector(".player-info-wrapper").classList.remove("waiting");
 
         playerNameHtml.textContent = player.name;
+
+        let card1HTML = playerHTML.querySelector("div").querySelector("#card1").querySelector("img");
+        let card2HTML = playerHTML.querySelector("div").querySelector("#card2").querySelector("img");
+        card1HTML.classList.remove("hidden");
+        card2HTML.classList.remove("hidden");
+
+        if (player.cards[0] == null || player.cards[1] == null) {
+            card1HTML.src = "assets/cards/back@2x.png";
+            card2HTML.src = "assets/cards/back@2x.png";
+        } else if (player.cards[0] != null && player.cards[1] != null) {
+            card1HTML.src = "assets/cards/" + player.cards[0] + ".png";
+            card2HTML.src = "assets/cards/" + player.cards[1] + ".png";
+        }
 
         playerHTML.querySelector(".player-info-wrapper").querySelector(".player-action").textContent = player.playerAction;
 
@@ -204,10 +193,20 @@ function updateTable() {
         } else {
             playerHTML.querySelector(".player-info-wrapper").classList.remove("active");
         }
+
+        if (player.playerWaitingForRoundStart){
+            playerHTML.querySelector(".player-info-wrapper").classList.add("waiting");
+            card1HTML.classList.add("hidden");
+            card2HTML.classList.add("hidden");
+        }
         // if (player.button) {
         //     table.querySelector(".player-button").style.transform = 'rotate(' + i * 45 + 'deg)';
         // }
 
+    }
+    for (var i = gameState.players.length; i <= 5; i++) {
+        const playerHTML = document.getElementById("playerPosition" + (i + 1).toString());
+        playerHTML.classList.add("hidden");
     }
 
 }
@@ -225,53 +224,35 @@ function mainLoop() {
 
 var myInterval = setInterval(mainLoop, 1000);
 
-// // Fetch example to get all games
-// fetch('/api/games/')
-//     .then(response => response.json())
-//     .then(data => {
-//         // Handle retrieved game data
-//         console.log(data);
-//     })
-//     .catch(error => {
-//         // Handle error
-//         console.error('Error:', error);
-//     });
+const socket = new WebSocket('ws://localhost:7071', 'echo-protocol');
 
-// Fetch example to create a new game
-// fetch('/api/games/', {
-//   method: 'POST',
-//   headers: {
-//     'Content-Type': 'application/json',
-//   },
-//   body: JSON.stringify(newGame),
-// })
-// .then(response => response.json())
-// .then(data => {
-//   // Handle created game data
-//   console.log(data);
-// })
-// .catch(error => {
-//   // Handle error
-//   console.error('Error:', error);
-// });
+socket.addEventListener('open', () => {
+    console.log('Connected to WebSocket server');
+});
 
-socket.onopen = () => {
-    console.log('WebSocket connected');
-};
+socket.addEventListener('message', (message) => {
+    const parsedData = JSON.parse(message.data)
+    console.log('Message from server:', message.data);
+    switch (parsedData.eventType) {
+        case "updateGameState":
+            if (parsedData) {
+                gameState = parsedData.data;
+            }
+            break;
+        case "gameOver":
+            // stopGame();
+            break;
+        default:
+            console.error("unknown event ", message.data);
+    }
+    console.log(parsedData)
+});
 
-socket.onerror = (error) => {
+socket.addEventListener('close', () => {
+    console.log('Disconnected from WebSocket server');
+});
+
+socket.addEventListener('error', (error) => {
     console.error('WebSocket error:', error);
-};
-
-socket.onmessage = (event) => {
-    const data = JSON.parse(event.data);
-    // Handle incoming WebSocket data
-    console.log('Received data:', data);
-
-    // Handle WebSocket data
-    console.log('Received data:', data);
-};
-
-let playerID = 1
-// Sending a message through WebSocket
-sendMessage("join", playerID);
+}
+);
