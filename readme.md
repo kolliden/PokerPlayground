@@ -106,13 +106,14 @@ Give examples
 
 A step by step series of examples that tell you how to get a development env running.
 
-Say what the step will be
+install dependencies
 
 ```
-Give the example
+cd backend
+npm install
 ```
 
-And repeat
+And Mongodb and nodejs in not yet installed
 
 ```
 until finished
