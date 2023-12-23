@@ -1,7 +1,5 @@
 "use strict";
 
-function _readOnlyError(name) { throw new Error("\"" + name + "\" is read-only"); }
-
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
 
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
@@ -888,10 +886,11 @@ function applyGameRules(gameID) {
             _smallBlindIndex = game.players.findIndex(function (player) {
               return player._id === game.button;
             }) + 1;
-            _bigBlindIndex = _smallBlindIndex + 2;
+            _bigBlindIndex = _smallBlindIndex + 1;
             if (_bigBlindIndex === game.players.length) _bigBlindIndex = 0;
             if (_bigBlindIndex === game.players.length + 1) _bigBlindIndex = 1;
-            if (_smallBlindIndex === game.players.length) _smallBlindIndex = (_readOnlyError("smallBlindIndex"), 0);
+            if (_smallBlindIndex === game.players.length) _smallBlindIndex = 0;
+            console.log("smallBlindIndex: " + _smallBlindIndex + " bigBlindIndex: " + _bigBlindIndex);
             game.players[_bigBlindIndex].hasBlinds = true;
             game.players[_bigBlindIndex].betAmount = 2;
             game.players[_smallBlindIndex].betAmount = 1;
@@ -915,7 +914,7 @@ function applyGameRules(gameID) {
           return _context10.abrupt("break", 67);
 
         case 65:
-          console.error('Invalid game round' + game.gameRound);
+          console.error('Invalid game round: ' + game.gameRound);
           return _context10.abrupt("break", 67);
 
         case 67:
@@ -928,7 +927,7 @@ function applyGameRules(gameID) {
           playersLeftInGame = [];
 
           for (_i2 = 0; _i2 < game.players.length; _i2++) {
-            if (game.players[_i2].isFolded || game.players[_i2].waitingForRoundStart || game.players[_i2].connecting) playersLeftInGame.push(game.players[_i2]);
+            if (!game.players[_i2].isFolded && !game.players[_i2].waitingForRoundStart && !game.players[_i2].connecting) playersLeftInGame.push(game.players[_i2]);
           }
 
           console.log(playersLeft.length);
@@ -1031,12 +1030,12 @@ function applyGameRules(gameID) {
           return regeneratorRuntime.awrap(applyGameRules(gameID));
 
         case 101:
-          _context10.next = 116;
+          _context10.next = 112;
           break;
 
         case 103:
           if (!(game.gameRound !== 'waiting' && (playersLeftInGame.length === 1 || game.gameRound === 'showdown'))) {
-            _context10.next = 116;
+            _context10.next = 112;
             break;
           }
 
@@ -1045,15 +1044,13 @@ function applyGameRules(gameID) {
 
         case 106:
           playerWon = _context10.sent;
-          console.log("playerWon: " + playerWon);
 
           if (!playerWon) {
-            _context10.next = 116;
+            _context10.next = 112;
             break;
           }
 
-          _context10.t2 = console;
-          _context10.next = 112;
+          _context10.next = 110;
           return regeneratorRuntime.awrap(Game.updateOne({
             _id: gameID
           }, {
@@ -1062,22 +1059,18 @@ function applyGameRules(gameID) {
             }
           }));
 
-        case 112:
-          _context10.t3 = _context10.sent;
-
-          _context10.t2.log.call(_context10.t2, _context10.t3);
-
-          _context10.next = 116;
+        case 110:
+          _context10.next = 112;
           return regeneratorRuntime.awrap(applyGameRules(gameID));
 
-        case 116:
-          _context10.next = 118;
+        case 112:
+          _context10.next = 114;
           return regeneratorRuntime.awrap(Game.findById(gameID));
 
-        case 118:
+        case 114:
           return _context10.abrupt("return", _context10.sent);
 
-        case 119:
+        case 115:
         case "end":
           return _context10.stop();
       }

@@ -415,10 +415,12 @@ async function applyGameRules(gameID) {
                     game.players[smallBlindIndex].betAmount = 1;
                 } else {
                     let smallBlindIndex = game.players.findIndex((player) => player._id === game.button) + 1;
-                    let bigBlindIndex = smallBlindIndex + 2;
+                    let bigBlindIndex = smallBlindIndex + 1;
                     if(bigBlindIndex === game.players.length) bigBlindIndex = 0;
                     if(bigBlindIndex === game.players.length + 1) bigBlindIndex = 1;
                     if(smallBlindIndex === game.players.length) smallBlindIndex = 0;
+
+                    console.log("smallBlindIndex: " + smallBlindIndex + " bigBlindIndex: " + bigBlindIndex);
 
                     game.players[bigBlindIndex].hasBlinds = true;
                     game.players[bigBlindIndex].betAmount = 2;
@@ -435,7 +437,7 @@ async function applyGameRules(gameID) {
             break;
 
         default:
-            console.error('Invalid game round' + game.gameRound);
+            console.error('Invalid game round: ' + game.gameRound);
             break;
     }
 
@@ -444,9 +446,8 @@ async function applyGameRules(gameID) {
     let playersLeftInGame = [];
 
     for (let i = 0; i < game.players.length; i++) {
-        if (game.players[i].isFolded || game.players[i].waitingForRoundStart || game.players[i].connecting) playersLeftInGame.push(game.players[i]);
+        if (!game.players[i].isFolded && !game.players[i].waitingForRoundStart && !game.players[i].connecting) playersLeftInGame.push(game.players[i]);
     }
-
     console.log(playersLeft.length);
 
     if (game.gameRound !== 'waiting' && playersLeft.length === 0 && playersLeftInGame !== 1) {
@@ -477,9 +478,8 @@ async function applyGameRules(gameID) {
         await applyGameRules(gameID);
     } else if (game.gameRound !== 'waiting' && (playersLeftInGame.length === 1 || game.gameRound === 'showdown')) {
         let playerWon = await handleWin(game);
-        console.log("playerWon: " + playerWon);
         if (playerWon) {
-            console.log(await Game.updateOne({ _id: gameID }, { $set: { gameRound: 'waiting' } }));
+            await Game.updateOne({ _id: gameID }, { $set: { gameRound: 'waiting' } });
             await applyGameRules(gameID);
         }
     }
