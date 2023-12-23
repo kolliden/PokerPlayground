@@ -30,27 +30,36 @@ function formatDataForClient(data, playerID) {
         };
         formattedData.players[i].cards = new Array(2);
 
-        if (data.players[i]._id === playerID) {
+        if (data.gameRound !== "showdown") {
+            if (data.players[i]._id === playerID) {
+                formattedData.players[i].cards = data.players[i].cards;
+            } else {
+                formattedData.players[i].cards = [null, null]
+            }
+            if (data.currentTurn === data.players[i]._id) {
+                formattedData.players[i].playerTurn = true;
+            } else {
+                formattedData.players[i].playerTurn = false;
+            }
+            if (data.players[i].betAmount >= 0) {
+                formattedData.players[i].playerAction = data.players[i].betAmount;
+            } else {
+                formattedData.players[i].playerAction = null;
+            }
+        } else {
             formattedData.players[i].cards = data.players[i].cards;
-        } else {
-            formattedData.players[i].cards = [null, null]
-        }
-        if (data.currentTurn === data.players[i]._id) {
-            formattedData.players[i].playerTurn = true;
-        } else {
             formattedData.players[i].playerTurn = false;
-        }
-        if (data.players[i].betAmount >= 0) {
-            formattedData.players[i].playerAction = data.players[i].betAmount;
-        } else {
             formattedData.players[i].playerAction = null;
         }
-
 
         formattedData.players[i].chips = data.players[i].chips;
         formattedData.players[i].betAmount = data.players[i].betAmount;
         formattedData.players[i].name = "Player " + i.toString();
         formattedData.players[i].playerWaitingForRoundStart = data.players[i].waitingForRoundStart;
+        if (data.button === data.players[i]._id) {
+            formattedData.players[i].button = true;
+        }
+
     }
     // console.log("formatted data: " + JSON.stringify(formattedData), "\nplayerID: " + playerID + "\n");
     return formattedData;

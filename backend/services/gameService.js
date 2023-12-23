@@ -375,56 +375,51 @@ async function applyGameRules(gameID) {
             } else if (game.players.length >= 2) {
                 console.log('Starting game...');
                 // set the button
-                await Game.updateOne({ _id: gameID }, { $set: { "players.$[].betAmount": null, "players.$[].waitingForRoundStart": false, "players.$[].isFolded": false, "players.$[].cards": [] } });
+                await Game.updateOne({ _id: gameID }, { $set: { "players.$[].betAmount": null, "players.$[].waitingForRoundStart": false, "players.$[].isFolded": false, "players.$[].cards": [], communityCards : [null, null, null, null, null] } });
 
                 const buttonIndex = game.players.findIndex((player) => player._id === game.button);
 
                 if (game.button === null) {
                     game.button = game.players[0]._id; //TODO: make random
-                } else {
-                    if (game.players.length === 2) {
-                        if (buttonIndex === 0) {
-                            game.button = game.players[1]._id;
-                            game.currentTurn = game.players[1]._id;
-                        } else {
-                            game.button = game.players[0]._id;
-                            game.currentTurn = game.players[0]._id;
-                        }
-                    } else if (game.players.length > 2) {
-                        if (buttonIndex === game.players.length - 1) {
-                            game.button = game.players[0]._id;
-                            game.currentTurn = game.players[1]._id;
-                        } else {
-                            game.button = game.players[buttonIndex + 1]._id;
-                            if (buttonIndex + 2 === game.players.length) {
-                                game.currentTurn = game.players[0]._id;
-                            } else {
-                                game.currentTurn = game.players[buttonIndex + 2]._id;
-                            }
-                        }
-                    }
                 }
-                // set the blinds
+
                 if (game.players.length === 2) {
+                    if (buttonIndex === 0) {
+                        game.button = game.players[1]._id;
+                        game.currentTurn = game.players[1]._id;
+                    } else {
+                        game.button = game.players[0]._id;
+                        game.currentTurn = game.players[0]._id;
+                    }
+
+                    // set the blinds
                     let smallBlindIndex = game.players.findIndex((player) => player._id === game.button);
                     let bigBlindIndex = smallBlindIndex + 1;
-                    if(bigBlindIndex === game.players.length) bigBlindIndex = 0;
+                    if (bigBlindIndex === game.players.length) bigBlindIndex = 0;
 
                     game.players[bigBlindIndex].hasBlinds = true;
                     game.players[bigBlindIndex].betAmount = 2;
                     game.players[smallBlindIndex].betAmount = 1;
                 } else {
-                    let smallBlindIndex = game.players.findIndex((player) => player._id === game.button) + 1;
-                    let bigBlindIndex = smallBlindIndex + 1;
-                    if(bigBlindIndex === game.players.length) bigBlindIndex = 0;
-                    if(bigBlindIndex === game.players.length + 1) bigBlindIndex = 1;
-                    if(smallBlindIndex === game.players.length) smallBlindIndex = 0;
+                    if (buttonIndex === game.players.length - 1) {
+                        game.button = game.players[0]._id;
+                    } else {
+                        game.button = game.players[buttonIndex + 1]._id;
+                    }
 
-                    console.log("smallBlindIndex: " + smallBlindIndex + " bigBlindIndex: " + bigBlindIndex);
+
+                    let smallBlindIndex = game.players.findIndex((player) => player._id === game.button) + 1;
+
+                    if (smallBlindIndex === game.players.length) smallBlindIndex = 0;
+                    let bigBlindIndex = smallBlindIndex + 1;
+                    if (bigBlindIndex === game.players.length) bigBlindIndex = 0;
+                    let nextTurnIndex = bigBlindIndex + 1;
+                    if (nextTurnIndex === game.players.length) nextTurnIndex = 0;
 
                     game.players[bigBlindIndex].hasBlinds = true;
                     game.players[bigBlindIndex].betAmount = 2;
                     game.players[smallBlindIndex].betAmount = 1;
+                    game.currentTurn = game.players[nextTurnIndex]._id;
                 }
 
                 game.pot = 3;
@@ -479,7 +474,7 @@ async function applyGameRules(gameID) {
     } else if (game.gameRound !== 'waiting' && (playersLeftInGame.length === 1 || game.gameRound === 'showdown')) {
         let playerWon = await handleWin(game);
         if (playerWon) {
-            await Game.updateOne({ _id: gameID }, { $set: { gameRound: 'waiting' } });
+            console.log(await Game.updateOne({ _id: gameID }, { $set: { gameRound: 'waiting' } }));
             await applyGameRules(gameID);
         }
     }

@@ -674,7 +674,7 @@ function handleWin(game) {
 }
 
 function applyGameRules(gameID) {
-  var game, nullCount, i, _cards, cards, card, _card, _cards2, buttonIndex, smallBlindIndex, bigBlindIndex, _smallBlindIndex, _bigBlindIndex, playersLeft, playersLeftInGame, _i2, playerWon;
+  var game, nullCount, i, _cards, cards, card, _card, _cards2, buttonIndex, smallBlindIndex, bigBlindIndex, _smallBlindIndex, _bigBlindIndex, nextTurnIndex, playersLeft, playersLeftInGame, _i2, playerWon;
 
   return regeneratorRuntime.async(function applyGameRules$(_context10) {
     while (1) {
@@ -836,7 +836,8 @@ function applyGameRules(gameID) {
               "players.$[].betAmount": null,
               "players.$[].waitingForRoundStart": false,
               "players.$[].isFolded": false,
-              "players.$[].cards": []
+              "players.$[].cards": [],
+              communityCards: [null, null, null, null, null]
             }
           }));
 
@@ -847,33 +848,18 @@ function applyGameRules(gameID) {
 
           if (game.button === null) {
             game.button = game.players[0]._id; //TODO: make random
-          } else {
-            if (game.players.length === 2) {
-              if (buttonIndex === 0) {
-                game.button = game.players[1]._id;
-                game.currentTurn = game.players[1]._id;
-              } else {
-                game.button = game.players[0]._id;
-                game.currentTurn = game.players[0]._id;
-              }
-            } else if (game.players.length > 2) {
-              if (buttonIndex === game.players.length - 1) {
-                game.button = game.players[0]._id;
-                game.currentTurn = game.players[1]._id;
-              } else {
-                game.button = game.players[buttonIndex + 1]._id;
-
-                if (buttonIndex + 2 === game.players.length) {
-                  game.currentTurn = game.players[0]._id;
-                } else {
-                  game.currentTurn = game.players[buttonIndex + 2]._id;
-                }
-              }
-            }
-          } // set the blinds
-
+          }
 
           if (game.players.length === 2) {
+            if (buttonIndex === 0) {
+              game.button = game.players[1]._id;
+              game.currentTurn = game.players[1]._id;
+            } else {
+              game.button = game.players[0]._id;
+              game.currentTurn = game.players[0]._id;
+            } // set the blinds
+
+
             smallBlindIndex = game.players.findIndex(function (player) {
               return player._id === game.button;
             });
@@ -883,17 +869,24 @@ function applyGameRules(gameID) {
             game.players[bigBlindIndex].betAmount = 2;
             game.players[smallBlindIndex].betAmount = 1;
           } else {
+            if (buttonIndex === game.players.length - 1) {
+              game.button = game.players[0]._id;
+            } else {
+              game.button = game.players[buttonIndex + 1]._id;
+            }
+
             _smallBlindIndex = game.players.findIndex(function (player) {
               return player._id === game.button;
             }) + 1;
+            if (_smallBlindIndex === game.players.length) _smallBlindIndex = 0;
             _bigBlindIndex = _smallBlindIndex + 1;
             if (_bigBlindIndex === game.players.length) _bigBlindIndex = 0;
-            if (_bigBlindIndex === game.players.length + 1) _bigBlindIndex = 1;
-            if (_smallBlindIndex === game.players.length) _smallBlindIndex = 0;
-            console.log("smallBlindIndex: " + _smallBlindIndex + " bigBlindIndex: " + _bigBlindIndex);
+            nextTurnIndex = _bigBlindIndex + 1;
+            if (nextTurnIndex === game.players.length) nextTurnIndex = 0;
             game.players[_bigBlindIndex].hasBlinds = true;
             game.players[_bigBlindIndex].betAmount = 2;
             game.players[_smallBlindIndex].betAmount = 1;
+            game.currentTurn = game.players[nextTurnIndex]._id;
           }
 
           game.pot = 3;
@@ -1030,12 +1023,12 @@ function applyGameRules(gameID) {
           return regeneratorRuntime.awrap(applyGameRules(gameID));
 
         case 101:
-          _context10.next = 112;
+          _context10.next = 115;
           break;
 
         case 103:
           if (!(game.gameRound !== 'waiting' && (playersLeftInGame.length === 1 || game.gameRound === 'showdown'))) {
-            _context10.next = 112;
+            _context10.next = 115;
             break;
           }
 
@@ -1046,11 +1039,12 @@ function applyGameRules(gameID) {
           playerWon = _context10.sent;
 
           if (!playerWon) {
-            _context10.next = 112;
+            _context10.next = 115;
             break;
           }
 
-          _context10.next = 110;
+          _context10.t2 = console;
+          _context10.next = 111;
           return regeneratorRuntime.awrap(Game.updateOne({
             _id: gameID
           }, {
@@ -1059,18 +1053,22 @@ function applyGameRules(gameID) {
             }
           }));
 
-        case 110:
-          _context10.next = 112;
+        case 111:
+          _context10.t3 = _context10.sent;
+
+          _context10.t2.log.call(_context10.t2, _context10.t3);
+
+          _context10.next = 115;
           return regeneratorRuntime.awrap(applyGameRules(gameID));
 
-        case 112:
-          _context10.next = 114;
+        case 115:
+          _context10.next = 117;
           return regeneratorRuntime.awrap(Game.findById(gameID));
 
-        case 114:
+        case 117:
           return _context10.abrupt("return", _context10.sent);
 
-        case 115:
+        case 118:
         case "end":
           return _context10.stop();
       }
