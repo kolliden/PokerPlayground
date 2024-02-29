@@ -4,6 +4,8 @@
     <meta charset="UTF-8" />
     <title>Poker Table</title>
     <link rel="stylesheet" href="styles.css" />
+    <link rel="icon" type="image/x-icon" href="/assets/favicon.ico">
+    <script src="js/auth.js" defer></script>
   </head>
   <body>
     <nav>
@@ -14,8 +16,6 @@
         <li><a href="account.htm">Account</a></li>
       </ul>
     </nav>
-
-    <div class="login-page"></div>
 
     <div class="table">
       <div class="pot">
@@ -57,10 +57,6 @@
           alt="2 of clubs"
           id="comm-card5"
         />
-      </div>
-
-      <div class="dealer-button">
-        <img src="assets/dealer-button.png" alt="dealer button" />
       </div>
 
       <div class="player-wrapper" id="playerPosition1">
@@ -226,24 +222,49 @@
         </div>
       </div>
     </div>
+    <section class="bottom-section">
+      <div class="chat">
+        <div class="game-messages">
+          <ul id="messages">
 
-    <div class="actions">
-      <button id="foldBtn" class="hidden" onclick="fold()">Fold</button>
-      <button id="checkBtn" class="hidden" onclick="check()">Check</button>
-      <button id="betBtn" class="hidden" onclick="bet()">Bet</button>
-      <button id="callBtn" class="hidden" onclick="call()">Call</button>
-      <button id="raiseBtn" class="hidden" onclick="raise()">Raise</button>
-      <input
-        type="number"
-        class="hidden"
-        id="raiseInput"
-        placeholder="Amount"
-        ,
-        min="2"
-      />
-    </div>
+          </ul>
+          <div id="game-message-input-wrapper">
+            <input
+            id="game-message-input"
+            autocomplete="off"
+            placeholder="Type your message here"
+            type="text"
+          />
+          <button id="sendMessageBtn" onclick="sendChatMessage()">Send</button>
+          </div>
+        </div>
+      </div>
+      <div class="actions">
+        <button id="foldBtn" class="hidden" onclick="fold()">Fold</button>
+        <button id="checkBtn" class="hidden" onclick="check()">Check</button>
+        <button id="betBtn" class="hidden" onclick="bet()">Bet</button>
+        <button id="callBtn" class="hidden" onclick="call()">Call</button>
+        <button id="raiseBtn" class="hidden" onclick="raise()">Raise</button>
+        <button id="allInBtn" class="hidden" onclick="allIn()">All In</button>
+          <div id="raiseInput" class="hidden">
+            <button id="thirdPotBtn" class="hidden raiseOption" onclick="thirdPot()">1/3</button>
+            <button id="halfPotBtn" class="hidden raiseOption" onclick="halfPot()">1/2</button>
+            <button id="allInBtn" class="hidden raiseOption" onclick="allIn()">All In</button>
+            <input
+            type="number"
+            placeholder="Amount"
+            min="1"
+            id="raiseInputField"
+            />
+            <div id="betBtnWrapper">
+              <button id="raiseInputByOneBtn" onclick="raiseInputByOne()">^</button>
+              <button id="decreaseInputByOneBtn"  style="transform: rotate(180deg);"onclick="decreaseInputByOne()">^</button>
+            </div>
+        </div>
+      </div>
+    </section>
 
     <script src="js/script.js"></script>
-    <script src="js/handler.js"></script>
+    <script src="js/game.js"></script>
   </body>
 </html>

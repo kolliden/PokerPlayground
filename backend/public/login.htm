@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+const app = expresstitle>Login Page</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <script src="js/auth.js" defer></script>
+</head>
+<body>
+    <section class="form-section">
+        <div class="container form-wrapper">
+            <h1>Login</h1>
+            <form>
+                <div class="form-group">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <button type="button" id="loginBtn" class="form-submit-btn" onclick="login()">Submit</button>
+                <p>Don't have an account? <a style="text-decoration: underline;" href="./register.htm">Register</a></p>
+            </form>
+        </div>
+    </section>
+</body>
+</html>

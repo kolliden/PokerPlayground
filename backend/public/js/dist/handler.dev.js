@@ -24,7 +24,11 @@ var gameState = {
     button: true,
     betAmount: 1,
     playerConnecting: false,
-    playerWaitingForRoundStart: false
+    playerWaitingForRoundStart: false,
+    isFolded: false,
+    isAllIn: false,
+    isSmallBlind: false,
+    isBigBlind: false
   }],
   pot: 0,
   board: [null, null, null, null, null],
@@ -55,7 +59,10 @@ function getPossibleActions() {
     } else {
       possibeActions.push("fold");
       possibeActions.push("call");
-      possibeActions.push("raise");
+
+      if (gameState.players[gameState.controllingPlayerIndex].chips > biggestBet - gameState.players[gameState.controllingPlayerIndex].betAmount) {
+        possibeActions.push("raise");
+      }
     }
   }
 
@@ -168,10 +175,44 @@ function updateTable() {
     var playerNameHtml = playerHTML.querySelector(".player-info-wrapper").querySelector(".player-info").querySelector(".player-name");
     var playerActionHTML = playerHTML.querySelector(".player-info-wrapper").querySelector(".player-action");
     var playerChipCountHTML = playerHTML.querySelector(".player-info-wrapper").querySelector(".player-info").querySelector(".chip-count");
+    var biggestBetExcludingActivePlayer = 0;
+
+    for (var j = 0; j < gameState.players.length; j++) {
+      if (i !== j) {
+        if (gameState.players[j].betAmount > biggestBetExcludingActivePlayer) {
+          biggestBetExcludingActivePlayer = gameState.players[j].betAmount;
+        } //TODO: better way?
+
+      }
+    }
+
     playerChipCountHTML.textContent = player.chips.toString();
+    var actionString = "";
+
+    if (player.betAmount > 0) {
+      actionString += "Bet: " + player.betAmount.toString() + "$";
+    } else if (player.betAmount === 0) {
+      actionString += "Check";
+    } else if (player.betAmount > biggestBetExcludingActivePlayer) {
+      actionString += "Raise: " + player.betAmount.toString() + "$";
+    } else if (player.betAmount === biggestBetExcludingActivePlayer) {
+      actionString += "Call" + player.betAmount.toString() + "$";
+    } else if (player.folded) {
+      actionString += "Fold";
+    } else if (player.allIn) {
+      actionString += "All In";
+    } else if (player.isBigBlind) {
+      actionString += "Big Blind: " + player.betAmount.toString() + "$";
+    } else if (player.isSmallBlind) {
+      actionString += "Small Blind: " + player.betAmount.toString() + "$";
+    } else if (player.playerTurn === false) {
+      actionString += "Waiting";
+    } else if (player.playerTurn === true) {
+      actionString += "Your Turn";
+    }
 
     if (player.playerAction) {
-      playerActionHTML.textContent = player.playerAction.toString();
+      playerActionHTML.textContent = actionString;
     } else {
       playerActionHTML.textContent = "";
     }
@@ -191,8 +232,6 @@ function updateTable() {
       card1HTML.src = "assets/cards/" + player.cards[0] + ".png";
       card2HTML.src = "assets/cards/" + player.cards[1] + ".png";
     }
-
-    playerHTML.querySelector(".player-info-wrapper").querySelector(".player-action").textContent = player.playerAction;
 
     if (player.playerTurn) {
       playerHTML.querySelector(".player-info-wrapper").classList.add("active");
@@ -227,7 +266,7 @@ function mainLoop() {
 }
 
 var myInterval = setInterval(mainLoop, 1000);
-var socket = new WebSocket('ws://localhost:7071', 'echo-protocol');
+var socket = new WebSocket('ws://192.168.178.75:7071', 'echo-protocol');
 socket.addEventListener('open', function () {
   console.log('Connected to WebSocket server');
 });
@@ -241,6 +280,9 @@ socket.addEventListener('message', function (message) {
         gameState = parsedData.data;
       }
 
+      var possibleActions = getPossibleActions();
+      updateButtons(possibleActions);
+      updateTable();
       break;
 
     case "gameOver":

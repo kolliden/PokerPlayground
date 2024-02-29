@@ -1,11 +1,22 @@
 const Game = require('../models/game');
+const User = require('../models/user');
 const { showdown } = require('../utils/handSolver');
+
+let gameMessage = "";
 
 async function resetGames() {
     try {
         await Game.updateMany({}, { $set: { players: [], gameRound: "waiting", pot: 0, communityCards: [null, null, null, null, null], remainingCardDeck: [] } });
     } catch (err) {
         console.error(err);
+    }
+}
+
+async function getGameData(gameID) {
+    try {
+        return await Game.findById(gameID);
+    } catch (err) {
+        console.error('Error getting game data:', err);
     }
 }
 
@@ -31,12 +42,14 @@ async function removePlayerFromGame(gameID, playerID) {
 async function addPlayerToGame(playerID) {
     try {
         //find game with playerarray less than 5
-        const availableGames = await Game.find({ $where: 'this.players.length <= 5' });
+        const availableGames = await Game.find({ $where: 'this.players.length <= 5' , players: { $elemMatch: { _id: { $ne: playerID } } }});
+        const player = await User.findOne({ _id: playerID });
+        const playerName = player.username;
         if (availableGames.length > 0) {
-            const playersGame = await Game.updateOne({ _id: availableGames[0]._id }, { $push: { players: { _id: playerID, waitingForRoundStart: true } } });
+            const playersGame = await Game.updateOne({ _id: availableGames[0]._id }, { $push: { players: { _id: playerID, name:playerName, waitingForRoundStart: true } } });
             return await Game.findById(availableGames[0]._id);
         } else {
-            const newGame = await Game.create({ players: [{ _id: playerID, waitingForRoundStart: true }] });
+            const newGame = await Game.create({ players: [{ _id: playerID, name:playerName, waitingForRoundStart: true }] });
             return newGame;
         }
     } catch (err) {
@@ -150,6 +163,7 @@ async function playerFold(gameID, playerID) {
 
         await advanceTurn(gameID);
 
+        gameMessage = 'Player ' + game.players[playerIndex].name + " folded";
         await game.save();
         await applyGameRules(gameID);
     } catch (err) {
@@ -182,12 +196,16 @@ async function playerBet(gameID, playerID, betAmount) {
             }
         }
         if (betAmount < biggestBet && (betAmount + game.players[playerIndex].betAmount) < biggestBet) {
-            console.error('Bet amount too small');
+            console.error('Bet amount is too low');
             return game;
         }
-        if (betAmount > game.players[playerIndex].chips) {
-            console.error('Not enough chips');
-            return game;
+        if (betAmount > game.players[playerIndex].chips || betAmount === game.players[playerIndex].chips) {
+            game.players[playerIndex].isAllIn = true;
+            game.players[playerIndex].betAmount += parseInt(game.players[playerIndex].chips) - parseInt(game.players[playerIndex].betAmount);
+            game.players[playerIndex].chips = 0;
+            game.pot += parseInt(game.players[playerIndex].betAmount);
+
+            gameMessage = 'Player ' + game.players[playerIndex].name + " went all in with " + game.players[playerIndex].betAmount + " chips";
         } else {
             if (game.players[playerIndex].betAmount) {
                 game.players[playerIndex].betAmount += parseInt(betAmount);
@@ -197,11 +215,13 @@ async function playerBet(gameID, playerID, betAmount) {
             game.players[playerIndex].chips -= parseInt(betAmount);
             game.pot = parseInt(betAmount) + parseInt(game.pot);
 
-            await advanceTurn(gameID);
-
-            await game.save()
-            return await Game.findById(gameID);
+            gameMessage = 'Player ' + game.players[playerIndex].name + " bet " + betAmount + " chips";
         }
+
+        await advanceTurn(gameID);
+
+        await game.save()
+        return await Game.findById(gameID);
     }
     catch (err) {
         console.error('Error betting:', err);
@@ -245,9 +265,6 @@ function parseCommunityCards(communityCards) {
             newCards[i][0] = parseInt(newCards[i][0]);
         }
     }
-    console.log("newCommunityCards");
-    console.log(communityCards);
-    console.log(newCards)
     return newCards;
 }
 
@@ -292,7 +309,7 @@ async function handleWin(game) {
         if (playersLeft.length === 1) {
             let winnerIndex = game.players.findIndex((player) => player._id === playersLeft[0]._id);
 
-            console.log('Winner: ' + game.players[winnerIndex], "won: " + game.pot + " chips");
+            gameMessage = 'Winner: ' + game.players[winnerIndex].name + " won " + game.pot + " chips";
 
             game.players[winnerIndex].chips += game.pot;
             game.pot = 0;
@@ -307,11 +324,13 @@ async function handleWin(game) {
         for (var i = 0; i < playersLeft.length; i++) {
             playerCards.push(playersLeft[i].cards);
         }
-        let [winnerIndex, PlayersHandsValue] = showdown(parseCards(playerCards), parseCommunityCards(game.communityCards));
+        let [winnerIndex, playersHandsValue] = showdown(parseCards(playerCards), parseCommunityCards(game.communityCards));
         let winner = game.players[winnerIndex];
 
         game.players[winnerIndex].chips += game.pot;
         console.log('Winner: ' + winner, "won: " + game.pot + " chips");
+        gameMessage = 'Winner: ' + game.players[winnerIndex].name + " won " + game.pot + " chips" + "with hand value:" + playersHandsValue[winnerIndex];
+
         game.pot = 0;
         await game.save();
         return winner;
@@ -343,7 +362,6 @@ async function applyGameRules(gameID) {
             }
             break;
         case 'flop':
-            console.log('Flop');
             if (nullCount === 5) {
                 let cards = await getCommunityCards(game, 3);
                 cards.push(null);
@@ -370,12 +388,27 @@ async function applyGameRules(gameID) {
 
             break;
         case 'waiting':
+            for (let i = 0; i < game.players.length; i++) {
+                if (game.players[i].chips <= 0) {
+                    console.log('Player ' + game.players[i]._id + ' is out of chips');
+                    await removePlayerFromGame(gameID, game.players[i]._id);
+                    game = await Game.findById(gameID);
+                    gameMessage = "Player " + game.players[i]._id + " is out of chips";
+                }
+            }
+            game = await Game.findById(gameID);
+
+            activePlayers = [];
+            for (let i = 0; i < game.players.length; i++) {
+                if (!game.players[i].waitingForRoundStart && !game.players[i].connecting) activePlayers.push(game.players[i]);
+            }
+
             if (game.players.length < 2) {
                 console.log('Not enough players to start game');
             } else if (game.players.length >= 2) {
                 console.log('Starting game...');
                 // set the button
-                await Game.updateOne({ _id: gameID }, { $set: { "players.$[].betAmount": null, "players.$[].waitingForRoundStart": false, "players.$[].isFolded": false, "players.$[].cards": [], communityCards : [null, null, null, null, null] } });
+                await Game.updateOne({ _id: gameID }, { $set: { "players.$[].betAmount": null, "players.$[].waitingForRoundStart": false, "players.$[].isFolded": false, "players.$[].isAllIn":false, "players.$[].cards": [], communityCards : [null, null, null, null, null] } });
 
                 const buttonIndex = game.players.findIndex((player) => player._id === game.button);
 
@@ -383,7 +416,7 @@ async function applyGameRules(gameID) {
                     game.button = game.players[0]._id; //TODO: make random
                 }
 
-                if (game.players.length === 2) {
+                if (activePlayers.length === 2) {
                     if (buttonIndex === 0) {
                         game.button = game.players[1]._id;
                         game.currentTurn = game.players[1]._id;
@@ -399,7 +432,10 @@ async function applyGameRules(gameID) {
 
                     game.players[bigBlindIndex].hasBlinds = true;
                     game.players[bigBlindIndex].betAmount = 2;
+                    game.players[bigBlindIndex].chips -= 2;
                     game.players[smallBlindIndex].betAmount = 1;
+                    game.players[smallBlindIndex].chips -= 1;
+
                 } else {
                     if (buttonIndex === game.players.length - 1) {
                         game.button = game.players[0]._id;
@@ -418,7 +454,9 @@ async function applyGameRules(gameID) {
 
                     game.players[bigBlindIndex].hasBlinds = true;
                     game.players[bigBlindIndex].betAmount = 2;
+                    game.players[bigBlindIndex].chips -= 2;
                     game.players[smallBlindIndex].betAmount = 1;
+                    game.players[smallBlindIndex].chips -= 1;
                     game.currentTurn = game.players[nextTurnIndex]._id;
                 }
 
@@ -428,24 +466,27 @@ async function applyGameRules(gameID) {
                 await game.save();
                 game = await Game.findById(gameID);
                 await giveEachPlayerCards(game);
+                gameMessage = "Handing out cards"
             }
             break;
-
         default:
             console.error('Invalid game round: ' + game.gameRound);
             break;
     }
 
     game = await Game.findById(gameID);
-    let playersLeft = checkIfPlayersActed(game);
+    let playersActed = checkIfPlayersActed(game);
     let playersLeftInGame = [];
 
     for (let i = 0; i < game.players.length; i++) {
         if (!game.players[i].isFolded && !game.players[i].waitingForRoundStart && !game.players[i].connecting) playersLeftInGame.push(game.players[i]);
     }
-    console.log(playersLeft.length);
+    let playersAllIn = [];
+    for (let i = 0; i < game.players.length; i++) {
+        if (game.players[i].isAllIn) playersAllIn.push(game.players[i]);
+    }
 
-    if (game.gameRound !== 'waiting' && playersLeft.length === 0 && playersLeftInGame !== 1) {
+    if (game.gameRound !== 'waiting' && playersActed.length === 0 && playersLeftInGame !== 1 && !(game.gameRound === 'showdown' && playersAllIn.length > 0)) {
         await Game.updateOne({ _id: gameID }, { $set: { "players.$[].betAmount": null, "players.$[].hasBlinds": false } });
         switch (game.gameRound) {
             case 'waiting':
@@ -453,12 +494,15 @@ async function applyGameRules(gameID) {
                 break;
             case 'preflop':
                 await Game.updateOne({ _id: gameID }, { $set: { gameRound: 'flop', } });
+                gameMessage = "Handing out flop cards"
                 break;
             case 'flop':
                 await Game.updateOne({ _id: gameID }, { $set: { gameRound: 'turn' } });
+                gameMessage = "Handing out turn card"
                 break;
             case 'turn':
                 await Game.updateOne({ _id: gameID }, { $set: { gameRound: 'river' } });
+                gameMessage = "Handing out river card"
                 break;
             case 'river':
                 await Game.updateOne({ _id: gameID }, { $set: { gameRound: 'showdown' } });
@@ -472,19 +516,22 @@ async function applyGameRules(gameID) {
         }
         await applyGameRules(gameID);
     } else if (game.gameRound !== 'waiting' && (playersLeftInGame.length === 1 || game.gameRound === 'showdown')) {
+        console.error('Game over');
         let playerWon = await handleWin(game);
         if (playerWon) {
-            console.log(await Game.updateOne({ _id: gameID }, { $set: { gameRound: 'waiting' } }));
+            await Game.updateOne({ _id: gameID }, { $set: { gameRound: 'waiting' } });
+            gameMessage = "Player " + playerWon.name + " won " + game.pot + " chips";
             await applyGameRules(gameID);
         }
     }
 
-    return await Game.findById(gameID);
+    return [await Game.findById(gameID), gameMessage];
 }
 
 
 module.exports = {
     resetGames,
+    getGameData,
     addPlayerToGame,
     applyGameRules,
     removePlayerFromGame,

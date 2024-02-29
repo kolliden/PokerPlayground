@@ -1,37 +1,29 @@
+const { addPlayerToGame, removePlayerFromGame, applyGameRules, playerBet, playerFold, getGameData } = require('./services/gameService');
+const { formatDataForClient } = require('./utils/formating');
 const WebSocket = require('ws');
-const { addPlayerToGame, removePlayerFromGame, applyGameRules, playerBet, playerFold } = require('./services/gameService');
-const { formatDataForClient } = require('./utils/formating')
 
-function initializeWebSocket(port = 7071) {
-    // Initialize WebSocket server
-    const wss = new WebSocket.Server({ port: 7071 });
-
+function initializeGameServer(wss) {
     // Function to broadcast messages to all connected clients
     function broadcast(message) {
         wss.clients.forEach((client) => {
             if (client.readyState === WebSocket.OPEN) {
-                client.send(message);
+                client.send(JSON.stringify(message));
                 // console.log("sent message to  via broadcast " + client, "message: " + message)
             }
         });
     }
-    const broadcastFormattedData = (data, clients) => {
-        for (var i = 0; i < data.players.length; i++) {
-            clients.forEach(function (metadata, ws) {
-                if (metadata.id === data.players[i]._id) { // TODO: this cant be efficient
-                    formatted = formatDataForClient(data, data.players[i]._id);
-
-                    formatted.controllingPlayerIndex = i;
-                    sendMessage(ws, JSON.stringify({ eventType: "updateGameState", data: formatted }));
-                }
-            });
-        }
+    const broadcastFormattedData = (data, gameMessage, clients) => {
+        clients.forEach(function (ws , userId) {
+            formatted = formatDataForClient(data, userId);
+            formatted.controllingPlayerIndex = data.players.findIndex((player) => player._id === userId)+1;
+            sendMessage(ws, JSON.stringify({ eventType: "updateGameState", data: formatted, gameMessages: [gameMessage] }));
+        });
     };
 
     function sendMessage(client, message) {
         //send messsage to one client
         if (client.readyState === WebSocket.OPEN) {
-            // console.log("sent message to client " + client, "message: " + message);
+            console.log("sent message to client " + userId, "message: " + message);
             client.send(message);
         }
     }
@@ -39,57 +31,60 @@ function initializeWebSocket(port = 7071) {
     const clients = new Map();
 
     // WebSocket server logic
-    wss.on('connection', async (ws) => {
-        console.log('A new WebSocket client connected');
-        const id = uuidv4();
-        const color = Math.floor(Math.random() * 360);
+    wss.on('connection', async (ws, req) => {
+        console.log('WebSocket client connected...');
+        userId = req.session.user._id;
 
-        let data = await addPlayerToGame(id);
-        const gameID = data._id;
+        let data = await addPlayerToGame(req.session.user._id);
+        const gameId = data._id;
 
-        const metadata = { id, color, gameID };
-        clients.set(ws, metadata);
+        clients.set(userId, ws);
 
-        console.log('Connecting to server ' + id + ' with metadata ' + metadata + " to game: " + gameID);
+        req.session.user.gameId = gameId;
+        req.session.save();
 
-        data = await applyGameRules(metadata.gameID);
+        console.log(req.session.user.username + ' is connecting to the server. ' + " To game: " + gameId);
+
+        [data, gameMessage] = await applyGameRules(req.session.user.gameId);
         if (data) {
-            broadcastFormattedData(data, clients);
+            broadcastFormattedData(data, gameMessage, clients);
         }
 
+        ws.on('error', err => {
+            console.dir(err);
+        });
 
         ws.on('message', async (messageAsBuffer) => {
             let message = JSON.parse(messageAsBuffer);
-            const metadata = clients.get(ws);
-
-            message.sender = metadata.id;
-            message.color = metadata.color;
-            message.gameID = metadata.gameID;
-
-            console.log('Received message from client ' + metadata.id + ':', message);
-
+            let gameMessage = null;
             try {
                 switch (message.data.eventType) {
                     case "playerAction":
                         if (message.data.action === "bet") {
                             if (data) {
-                                let data = await playerBet(message.gameID, message.sender, message.data.amount);
-                                data = await applyGameRules(metadata.gameID);
+                                let data = await playerBet(req.session.user.gameId, userId, message.data.amount);
+                                [data, gameMessage] = await applyGameRules(req.session.user.gameId);
 
-                                broadcastFormattedData(data, clients);
+                                broadcastFormattedData(data, gameMessage, clients);
                             }
                         } else if (message.data.action === "fold") {
                             if (data) {
-                                console.log("player " + message.sender + " folded");
                                 await playerFold(message.gameID, message.sender);
-                                data = await applyGameRules(metadata.gameID);
+                                [data, gameMessage] = await applyGameRules(metadata.gameID);
 
-                                broadcastFormattedData(data, clients);
+                                broadcastFormattedData(data, gameMessage, clients);
                             }
                         }
                         break;
                     case "chatMessage":
-                        console.error("Chat message not implemented");
+                        console.log("chatMessage: " + JSON.stringify(message));
+                        if (message.data.message) {
+                            data = await getGameData(message.gameID);
+                            let playerName = data.players.find((player) => player._id === message.sender).name;
+                            let temp = { data: { message: message.data.message, player: playerName }, eventType: "chatMessage" }
+                            console.log(temp);
+                            broadcast(temp, clients);
+                        }
                         break;
                     default:
                         console.error("Unknown message type");
@@ -102,16 +97,21 @@ function initializeWebSocket(port = 7071) {
         // WebSocket close handling
         ws.on("close", () => {
             console.log("WebSocket close ")
-            removePlayerFromGame(clients.get(ws).gameID, clients.get(ws).id);
-            clients.delete(ws);
+            removePlayerFromGame(gameId, userId);
+            clients.delete(userId);
         });
     });
+    wss.on('error', err => {
+        console.dir(err);
+    });
+
     function uuidv4() {
         return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
             var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
             return v.toString(16);
         });
     }
+    return wss;
 }
 
-module.exports = initializeWebSocket;
+module.exports = initializeGameServer;

@@ -30,7 +30,8 @@ function formatDataForClient(data, playerID) {
         };
         formattedData.players[i].cards = new Array(2);
 
-        if (data.gameRound !== "showdown") {
+        // console.log("gameRound: " + data.gameRound + "\n");
+        if (data.gameRound !== "showdown" && data.gameRound !== "waiting") {
             if (data.players[i]._id === playerID) {
                 formattedData.players[i].cards = data.players[i].cards;
             } else {
@@ -47,6 +48,7 @@ function formatDataForClient(data, playerID) {
                 formattedData.players[i].playerAction = null;
             }
         } else {
+            console.log("showdown");
             formattedData.players[i].cards = data.players[i].cards;
             formattedData.players[i].playerTurn = false;
             formattedData.players[i].playerAction = null;
@@ -54,11 +56,17 @@ function formatDataForClient(data, playerID) {
 
         formattedData.players[i].chips = data.players[i].chips;
         formattedData.players[i].betAmount = data.players[i].betAmount;
-        formattedData.players[i].name = "Player " + i.toString();
+        formattedData.players[i].name = data.players[i].name;
         formattedData.players[i].playerWaitingForRoundStart = data.players[i].waitingForRoundStart;
+        formattedData.players[i].isFolded = data.players[i].isFolded;
+        formattedData.players[i].isAllIn = data.players[i].isAllIn;
+        formattedData.players[i].isBigBlind = data.players[i].hasBlinds;
+        formattedData.players[i].isSmallBlind = data.players[i].hasBlinds;
+
         if (data.button === data.players[i]._id) {
             formattedData.players[i].button = true;
         }
+
 
     }
     // console.log("formatted data: " + JSON.stringify(formattedData), "\nplayerID: " + playerID + "\n");

@@ -7,6 +7,7 @@ const gameSchema = new mongoose.Schema({
     players: [
         {
             _id: { type: String, required: true },
+            name: { type: String, default: 'Player' },
             cards: [String],
             hasBlinds: {
                 type: Boolean,
@@ -16,7 +17,7 @@ const gameSchema = new mongoose.Schema({
                 type: Number || null, // null means not yet bet
                 default: undefined,
             },
-            chips: {type: Number,  default: 2000},
+            chips: {type: Number,  default: 100},
             isFolded: {
                 type: Boolean,
                 default: false,
@@ -50,6 +51,12 @@ const gameSchema = new mongoose.Schema({
         enum: ['waiting', 'preflop', 'flop', 'turn', 'river', 'showdown'], // Enum for game rounds
         default: 'waiting',
     },
+    gameMessages: [
+        {
+            message: String,
+            sender: String,
+        },
+    ],
 });
 
 const Game = mongoose.model('Game', gameSchema);

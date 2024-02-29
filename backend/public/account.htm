@@ -16,18 +16,14 @@
     </nav>
 
     <div class="account-info">
-        <div class="account-name">Account</div>
-        <div class="account-chip-count">10000$</div>
-        <div class="account-games-played">Games Played: 0</div>
-        <div class="account-games-won">Games Won: 0</div>
-        <div class="account-games-lost">Games Lost: 0</div>
-        <div class="account-games-won-percent">Win Percentage: 0%</div>
+        <ul id="account-stats">
+        </ul>
 
         <button class="view-detailed-hand-history-button">View Detailed Hand History</button>
 
-        
-
-        <button class="account-logout-btn">Logout</button>
+        <button class="account-logout-btn" onclick="logout();">Logout</button>
     </div>
   </body>
+  <script src="js/auth.js"></script>
+  <script src="js/updateStats.js"></script>
 </html>

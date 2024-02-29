@@ -1,9 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const UserController = require('../controllers/userController');
+const authController = require('../controllers/authController');
 
-// Define user-related routes
-router.post('/users', UserController.createUser);
-// Define other user-related routes (update, get, delete, etc.)
+router.post('/updateInfo', authController.logout);//temporary
 
 module.exports = router;

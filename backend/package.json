@@ -1,12 +1,35 @@
 {
   "dependencies": {
-    "dotenv": "^16.3.1",
+    "bcrypt": "^5.1.1",
+    "body-parser": "^1.20.2",
+    "connect-mongodb-session": "^5.0.0",
+    "connect-redis": "^7.1.1",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.1",
     "express": "^4.18.2",
+    "express-session": "^1.18.0",
+    "express-validator": "^7.0.1",
     "jsonwebtoken": "^9.0.2",
+    "memorystore": "^1.6.7",
     "mongodb": "^6.3.0",
-    "mongoose": "^8.0.2",
+    "mongoose": "^8.1.1",
+    "redis": "^4.6.13",
     "uuid": "^9.0.1",
     "websocket": "^1.0.34",
     "ws": "^8.14.2"
-  }
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.3"
+  },
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "Server for poker",
+  "main": "server.js",
+  "author": "konstantin mühlberg",
+  "license": "ISC"
 }

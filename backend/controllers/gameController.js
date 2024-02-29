@@ -9,10 +9,26 @@ async function startNewGame(req, res, next) {
     next(err);
   }
 }
+async function getGameById(req, res, next) {
+  try {
+    const game = await GameService.getGameById(req.params.id);
+    res.status(200).json(game);
+  } catch (err) {
+    next(err);
+  }
+}
 
-// Other game-related controller functions (playTurn, endGame, getGameById, etc.)
+async function getGames(req, res, next) {
+  try {
+    const games = await GameService.getGames();
+    res.status(200).json(games);
+  } catch (err) {
+    next(err);
+  }
+}
 
 module.exports = {
   startNewGame,
-  // Other exported game-related functions
+  getGameById,
+  getGames,
 };

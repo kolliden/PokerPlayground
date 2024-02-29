@@ -90,7 +90,6 @@ Add notes about how to use the system.
 - [MongoDB](https://www.mongodb.com/) - Database
 - [Express](https://expressjs.com/) - Server Framework
 - [NodeJs](https://nodejs.org/en/) - Server Environment
-
 ## ✍️ Authors <a name = "authors"></a>
 
 - [@kolliden](https://github.com/kolliden) - Idea & Initial work
@@ -100,6 +99,4 @@ who participated in this project.
 
 ## 🎉 Acknowledgments <a name = "acknowledgments"></a>
 
-- Hat tip to anyone whose code was used
-- Inspiration
-- References
+- [react-native-framework](https://starter.obytes.com/getting-started/create-new-app/)

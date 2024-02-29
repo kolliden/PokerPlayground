@@ -10,8 +10,12 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 var Game = require('../models/game');
 
+var User = require('../models/user');
+
 var _require = require('../utils/handSolver'),
     showdown = _require.showdown;
+
+var gameMessage = "";
 
 function resetGames() {
   return regeneratorRuntime.async(function resetGames$(_context) {
@@ -47,37 +51,62 @@ function resetGames() {
   }, null, null, [[0, 5]]);
 }
 
-function removePlayerFromGame(gameID, playerID) {
-  var game, updateResult;
-  return regeneratorRuntime.async(function removePlayerFromGame$(_context2) {
+function getGameData(gameID) {
+  return regeneratorRuntime.async(function getGameData$(_context2) {
     while (1) {
       switch (_context2.prev = _context2.next) {
         case 0:
           _context2.prev = 0;
-          _context2.t0 = regeneratorRuntime;
-          _context2.t1 = Game;
-          _context2.next = 5;
+          _context2.next = 3;
+          return regeneratorRuntime.awrap(Game.findById(gameID));
+
+        case 3:
+          return _context2.abrupt("return", _context2.sent);
+
+        case 6:
+          _context2.prev = 6;
+          _context2.t0 = _context2["catch"](0);
+          console.error('Error getting game data:', _context2.t0);
+
+        case 9:
+        case "end":
+          return _context2.stop();
+      }
+    }
+  }, null, null, [[0, 6]]);
+}
+
+function removePlayerFromGame(gameID, playerID) {
+  var game, updateResult;
+  return regeneratorRuntime.async(function removePlayerFromGame$(_context3) {
+    while (1) {
+      switch (_context3.prev = _context3.next) {
+        case 0:
+          _context3.prev = 0;
+          _context3.t0 = regeneratorRuntime;
+          _context3.t1 = Game;
+          _context3.next = 5;
           return regeneratorRuntime.awrap(gameID);
 
         case 5:
-          _context2.t2 = _context2.sent;
-          _context2.t3 = _context2.t1.findById.call(_context2.t1, _context2.t2);
-          _context2.next = 9;
-          return _context2.t0.awrap.call(_context2.t0, _context2.t3);
+          _context3.t2 = _context3.sent;
+          _context3.t3 = _context3.t1.findById.call(_context3.t1, _context3.t2);
+          _context3.next = 9;
+          return _context3.t0.awrap.call(_context3.t0, _context3.t3);
 
         case 9:
-          game = _context2.sent;
+          game = _context3.sent;
 
           if (game) {
-            _context2.next = 13;
+            _context3.next = 13;
             break;
           }
 
           console.error('Game not found ' + gameID, " player: " + playerID);
-          return _context2.abrupt("return");
+          return _context3.abrupt("return");
 
         case 13:
-          _context2.next = 15;
+          _context3.next = 15;
           return regeneratorRuntime.awrap(Game.updateOne({
             _id: gameID
           }, {
@@ -89,89 +118,19 @@ function removePlayerFromGame(gameID, playerID) {
           }));
 
         case 15:
-          updateResult = _context2.sent;
+          updateResult = _context3.sent;
 
           if (!updateResult.modifiedCount > 0) {
             console.error('Player error while removing from game: ' + playerID);
           }
 
-          _context2.next = 22;
-          break;
-
-        case 19:
-          _context2.prev = 19;
-          _context2.t4 = _context2["catch"](0);
-          console.error('Error removing player from game:', _context2.t4);
-
-        case 22:
-        case "end":
-          return _context2.stop();
-      }
-    }
-  }, null, null, [[0, 19]]);
-}
-
-function addPlayerToGame(playerID) {
-  var availableGames, playersGame, newGame;
-  return regeneratorRuntime.async(function addPlayerToGame$(_context3) {
-    while (1) {
-      switch (_context3.prev = _context3.next) {
-        case 0:
-          _context3.prev = 0;
-          _context3.next = 3;
-          return regeneratorRuntime.awrap(Game.find({
-            $where: 'this.players.length <= 5'
-          }));
-
-        case 3:
-          availableGames = _context3.sent;
-
-          if (!(availableGames.length > 0)) {
-            _context3.next = 13;
-            break;
-          }
-
-          _context3.next = 7;
-          return regeneratorRuntime.awrap(Game.updateOne({
-            _id: availableGames[0]._id
-          }, {
-            $push: {
-              players: {
-                _id: playerID,
-                waitingForRoundStart: true
-              }
-            }
-          }));
-
-        case 7:
-          playersGame = _context3.sent;
-          _context3.next = 10;
-          return regeneratorRuntime.awrap(Game.findById(availableGames[0]._id));
-
-        case 10:
-          return _context3.abrupt("return", _context3.sent);
-
-        case 13:
-          _context3.next = 15;
-          return regeneratorRuntime.awrap(Game.create({
-            players: [{
-              _id: playerID,
-              waitingForRoundStart: true
-            }]
-          }));
-
-        case 15:
-          newGame = _context3.sent;
-          return _context3.abrupt("return", newGame);
-
-        case 17:
           _context3.next = 22;
           break;
 
         case 19:
           _context3.prev = 19;
-          _context3.t0 = _context3["catch"](0);
-          console.error('Error finding or creating game:', _context3.t0);
+          _context3.t4 = _context3["catch"](0);
+          console.error('Error removing player from game:', _context3.t4);
 
         case 22:
         case "end":
@@ -181,6 +140,93 @@ function addPlayerToGame(playerID) {
   }, null, null, [[0, 19]]);
 }
 
+function addPlayerToGame(playerID) {
+  var availableGames, player, playerName, playersGame, newGame;
+  return regeneratorRuntime.async(function addPlayerToGame$(_context4) {
+    while (1) {
+      switch (_context4.prev = _context4.next) {
+        case 0:
+          _context4.prev = 0;
+          _context4.next = 3;
+          return regeneratorRuntime.awrap(Game.find({
+            $where: 'this.players.length <= 5',
+            players: {
+              $elemMatch: {
+                _id: {
+                  $ne: playerID
+                }
+              }
+            }
+          }));
+
+        case 3:
+          availableGames = _context4.sent;
+          _context4.next = 6;
+          return regeneratorRuntime.awrap(User.findOne({
+            _id: playerID
+          }));
+
+        case 6:
+          player = _context4.sent;
+          playerName = player.username;
+
+          if (!(availableGames.length > 0)) {
+            _context4.next = 17;
+            break;
+          }
+
+          _context4.next = 11;
+          return regeneratorRuntime.awrap(Game.updateOne({
+            _id: availableGames[0]._id
+          }, {
+            $push: {
+              players: {
+                _id: playerID,
+                name: playerName,
+                waitingForRoundStart: true
+              }
+            }
+          }));
+
+        case 11:
+          playersGame = _context4.sent;
+          _context4.next = 14;
+          return regeneratorRuntime.awrap(Game.findById(availableGames[0]._id));
+
+        case 14:
+          return _context4.abrupt("return", _context4.sent);
+
+        case 17:
+          _context4.next = 19;
+          return regeneratorRuntime.awrap(Game.create({
+            players: [{
+              _id: playerID,
+              name: playerName,
+              waitingForRoundStart: true
+            }]
+          }));
+
+        case 19:
+          newGame = _context4.sent;
+          return _context4.abrupt("return", newGame);
+
+        case 21:
+          _context4.next = 26;
+          break;
+
+        case 23:
+          _context4.prev = 23;
+          _context4.t0 = _context4["catch"](0);
+          console.error('Error finding or creating game:', _context4.t0);
+
+        case 26:
+        case "end":
+          return _context4.stop();
+      }
+    }
+  }, null, null, [[0, 23]]);
+}
+
 function giveEachPlayerCards(game) {
   var numberOfCards,
       possibleCards,
@@ -188,13 +234,13 @@ function giveEachPlayerCards(game) {
       i,
       j,
       card,
-      _args4 = arguments;
-  return regeneratorRuntime.async(function giveEachPlayerCards$(_context4) {
+      _args5 = arguments;
+  return regeneratorRuntime.async(function giveEachPlayerCards$(_context5) {
     while (1) {
-      switch (_context4.prev = _context4.next) {
+      switch (_context5.prev = _context5.next) {
         case 0:
-          numberOfCards = _args4.length > 1 && _args4[1] !== undefined ? _args4[1] : 2;
-          _context4.prev = 1;
+          numberOfCards = _args5.length > 1 && _args5[1] !== undefined ? _args5[1] : 2;
+          _context5.prev = 1;
           possibleCards = [];
 
           if (game.remainingCardDeck.length > numberOfCards * game.players.length) {
@@ -208,17 +254,17 @@ function giveEachPlayerCards(game) {
 
         case 6:
           if (!(i < game.players.length)) {
-            _context4.next = 14;
+            _context5.next = 14;
             break;
           }
 
           if (!(game.players[i].cards.length > 0)) {
-            _context4.next = 10;
+            _context5.next = 10;
             break;
           }
 
           console.error('Player already has cards');
-          return _context4.abrupt("return");
+          return _context5.abrupt("return");
 
         case 10:
           for (j = 0; j < numberOfCards; j++) {
@@ -234,28 +280,28 @@ function giveEachPlayerCards(game) {
 
         case 11:
           i++;
-          _context4.next = 6;
+          _context5.next = 6;
           break;
 
         case 14:
           game.remainingCardDeck = possibleCards.filter(function (card) {
             return !usedCards.includes(card);
           });
-          _context4.next = 17;
+          _context5.next = 17;
           return regeneratorRuntime.awrap(game.save());
 
         case 17:
-          _context4.next = 22;
+          _context5.next = 22;
           break;
 
         case 19:
-          _context4.prev = 19;
-          _context4.t0 = _context4["catch"](1);
-          console.error('Error giving cards to players:', _context4.t0);
+          _context5.prev = 19;
+          _context5.t0 = _context5["catch"](1);
+          console.error('Error giving cards to players:', _context5.t0);
 
         case 22:
         case "end":
-          return _context4.stop();
+          return _context5.stop();
       }
     }
   }, null, null, [[1, 19]]);
@@ -263,9 +309,9 @@ function giveEachPlayerCards(game) {
 
 function getCommunityCards(game, numberOfCards) {
   var possibleCards, finalCards, usedCards, j, card;
-  return regeneratorRuntime.async(function getCommunityCards$(_context5) {
+  return regeneratorRuntime.async(function getCommunityCards$(_context6) {
     while (1) {
-      switch (_context5.prev = _context5.next) {
+      switch (_context6.prev = _context6.next) {
         case 0:
           possibleCards = [];
 
@@ -292,15 +338,15 @@ function getCommunityCards(game, numberOfCards) {
           game.remainingCardDeck = possibleCards.filter(function (card) {
             return !usedCards.includes(card);
           });
-          _context5.next = 8;
+          _context6.next = 8;
           return regeneratorRuntime.awrap(game.save());
 
         case 8:
-          return _context5.abrupt("return", finalCards);
+          return _context6.abrupt("return", finalCards);
 
         case 9:
         case "end":
-          return _context5.stop();
+          return _context6.stop();
       }
     }
   });
@@ -308,15 +354,15 @@ function getCommunityCards(game, numberOfCards) {
 
 function advanceTurn(gameID) {
   var game, playerIndex, newPlayerIndex;
-  return regeneratorRuntime.async(function advanceTurn$(_context6) {
+  return regeneratorRuntime.async(function advanceTurn$(_context7) {
     while (1) {
-      switch (_context6.prev = _context6.next) {
+      switch (_context7.prev = _context7.next) {
         case 0:
-          _context6.next = 2;
+          _context7.next = 2;
           return regeneratorRuntime.awrap(Game.findById(gameID));
 
         case 2:
-          game = _context6.sent;
+          game = _context7.sent;
           playerIndex = game.players.findIndex(function (player) {
             return player._id === game.currentTurn;
           });
@@ -342,12 +388,12 @@ function advanceTurn(gameID) {
 
           game.currentTurn = game.players[newPlayerIndex]._id; // console.log('New turn: ' + game.players[newPlayerIndex]);
 
-          _context6.next = 11;
+          _context7.next = 11;
           return regeneratorRuntime.awrap(game.save());
 
         case 11:
         case "end":
-          return _context6.stop();
+          return _context7.stop();
       }
     }
   });
@@ -355,62 +401,7 @@ function advanceTurn(gameID) {
 
 function playerFold(gameID, playerID) {
   var game, playerIndex;
-  return regeneratorRuntime.async(function playerFold$(_context7) {
-    while (1) {
-      switch (_context7.prev = _context7.next) {
-        case 0:
-          _context7.prev = 0;
-          _context7.next = 3;
-          return regeneratorRuntime.awrap(Game.findById(gameID));
-
-        case 3:
-          game = _context7.sent;
-          playerIndex = game.players.findIndex(function (player) {
-            return player._id === playerID;
-          });
-
-          if (game) {
-            _context7.next = 8;
-            break;
-          }
-
-          console.error('Game or player not found');
-          return _context7.abrupt("return");
-
-        case 8:
-          game.players[playerIndex].isFolded = true;
-          game.players[playerIndex].betAmount = null;
-          _context7.next = 12;
-          return regeneratorRuntime.awrap(advanceTurn(gameID));
-
-        case 12:
-          _context7.next = 14;
-          return regeneratorRuntime.awrap(game.save());
-
-        case 14:
-          _context7.next = 16;
-          return regeneratorRuntime.awrap(applyGameRules(gameID));
-
-        case 16:
-          _context7.next = 21;
-          break;
-
-        case 18:
-          _context7.prev = 18;
-          _context7.t0 = _context7["catch"](0);
-          console.error('Error folding:', _context7.t0);
-
-        case 21:
-        case "end":
-          return _context7.stop();
-      }
-    }
-  }, null, null, [[0, 18]]);
-}
-
-function playerBet(gameID, playerID, betAmount) {
-  var game, playerIndex, biggestBet, i;
-  return regeneratorRuntime.async(function playerBet$(_context8) {
+  return regeneratorRuntime.async(function playerFold$(_context8) {
     while (1) {
       switch (_context8.prev = _context8.next) {
         case 0:
@@ -423,24 +414,80 @@ function playerBet(gameID, playerID, betAmount) {
           playerIndex = game.players.findIndex(function (player) {
             return player._id === playerID;
           });
+
+          if (game) {
+            _context8.next = 8;
+            break;
+          }
+
+          console.error('Game or player not found');
+          return _context8.abrupt("return");
+
+        case 8:
+          game.players[playerIndex].isFolded = true;
+          game.players[playerIndex].betAmount = null;
+          _context8.next = 12;
+          return regeneratorRuntime.awrap(advanceTurn(gameID));
+
+        case 12:
+          gameMessage = 'Player ' + game.players[playerIndex].name + " folded";
+          _context8.next = 15;
+          return regeneratorRuntime.awrap(game.save());
+
+        case 15:
+          _context8.next = 17;
+          return regeneratorRuntime.awrap(applyGameRules(gameID));
+
+        case 17:
+          _context8.next = 22;
+          break;
+
+        case 19:
+          _context8.prev = 19;
+          _context8.t0 = _context8["catch"](0);
+          console.error('Error folding:', _context8.t0);
+
+        case 22:
+        case "end":
+          return _context8.stop();
+      }
+    }
+  }, null, null, [[0, 19]]);
+}
+
+function playerBet(gameID, playerID, betAmount) {
+  var game, playerIndex, biggestBet, i;
+  return regeneratorRuntime.async(function playerBet$(_context9) {
+    while (1) {
+      switch (_context9.prev = _context9.next) {
+        case 0:
+          _context9.prev = 0;
+          _context9.next = 3;
+          return regeneratorRuntime.awrap(Game.findById(gameID));
+
+        case 3:
+          game = _context9.sent;
+          playerIndex = game.players.findIndex(function (player) {
+            return player._id === playerID;
+          });
           if (betAmount === null) betAmount = 0; // console.log(playerIndex, playerID, game);
 
           if (game) {
-            _context8.next = 9;
+            _context9.next = 9;
             break;
           }
 
           console.error('Game not found');
-          return _context8.abrupt("return", game);
+          return _context9.abrupt("return", game);
 
         case 9:
           if (!(game.currentTurn !== playerID)) {
-            _context8.next = 12;
+            _context9.next = 12;
             break;
           }
 
           console.error('Not your turn');
-          return _context8.abrupt("return", game);
+          return _context9.abrupt("return", game);
 
         case 12:
           if (game.players[playerIndex].isFolded) {
@@ -456,60 +503,57 @@ function playerBet(gameID, playerID, betAmount) {
           }
 
           if (!(betAmount < biggestBet && betAmount + game.players[playerIndex].betAmount < biggestBet)) {
-            _context8.next = 18;
+            _context9.next = 18;
             break;
           }
 
-          console.error('Bet amount too small');
-          return _context8.abrupt("return", game);
+          console.error('Bet amount is too low');
+          return _context9.abrupt("return", game);
 
         case 18:
-          if (!(betAmount > game.players[playerIndex].chips)) {
-            _context8.next = 23;
-            break;
-          }
-
-          console.error('Not enough chips');
-          return _context8.abrupt("return", game);
-
-        case 23:
-          if (game.players[playerIndex].betAmount) {
-            game.players[playerIndex].betAmount += parseInt(betAmount);
+          if (betAmount > game.players[playerIndex].chips || betAmount === game.players[playerIndex].chips) {
+            game.players[playerIndex].isAllIn = true;
+            game.players[playerIndex].betAmount += parseInt(game.players[playerIndex].chips) - parseInt(game.players[playerIndex].betAmount);
+            game.players[playerIndex].chips = 0;
+            game.pot += parseInt(game.players[playerIndex].betAmount);
+            gameMessage = 'Player ' + game.players[playerIndex].name + " went all in with " + game.players[playerIndex].betAmount + " chips";
           } else {
-            game.players[playerIndex].betAmount = parseInt(betAmount);
+            if (game.players[playerIndex].betAmount) {
+              game.players[playerIndex].betAmount += parseInt(betAmount);
+            } else {
+              game.players[playerIndex].betAmount = parseInt(betAmount);
+            }
+
+            game.players[playerIndex].chips -= parseInt(betAmount);
+            game.pot = parseInt(betAmount) + parseInt(game.pot);
+            gameMessage = 'Player ' + game.players[playerIndex].name + " bet " + betAmount + " chips";
           }
 
-          game.players[playerIndex].chips -= parseInt(betAmount);
-          game.pot = parseInt(betAmount) + parseInt(game.pot);
-          _context8.next = 28;
+          _context9.next = 21;
           return regeneratorRuntime.awrap(advanceTurn(gameID));
 
-        case 28:
-          _context8.next = 30;
+        case 21:
+          _context9.next = 23;
           return regeneratorRuntime.awrap(game.save());
 
-        case 30:
-          _context8.next = 32;
+        case 23:
+          _context9.next = 25;
           return regeneratorRuntime.awrap(Game.findById(gameID));
 
-        case 32:
-          return _context8.abrupt("return", _context8.sent);
+        case 25:
+          return _context9.abrupt("return", _context9.sent);
 
-        case 33:
-          _context8.next = 38;
-          break;
+        case 28:
+          _context9.prev = 28;
+          _context9.t0 = _context9["catch"](0);
+          console.error('Error betting:', _context9.t0);
 
-        case 35:
-          _context8.prev = 35;
-          _context8.t0 = _context8["catch"](0);
-          console.error('Error betting:', _context8.t0);
-
-        case 38:
+        case 31:
         case "end":
-          return _context8.stop();
+          return _context9.stop();
       }
     }
-  }, null, null, [[0, 35]]);
+  }, null, null, [[0, 28]]);
 } // function parseCards(players) {
 //     //[ [ '8H', '3S' ], [ '3H', 'TC' ] ] to [[[8, 'H'], [3, 'S']], [[3, 'H'], [10, 'C']]]
 // }
@@ -565,9 +609,6 @@ function parseCommunityCards(communityCards) {
     }
   }
 
-  console.log("newCommunityCards");
-  console.log(communityCards);
-  console.log(newCards);
   return newCards;
 }
 
@@ -600,11 +641,11 @@ function checkIfPlayersActed(game) {
 }
 
 function handleWin(game) {
-  var playersLeft, _i, winnerIndex, playerCards, i, _showdown, _showdown2, _winnerIndex, PlayersHandsValue, winner;
+  var playersLeft, _i, winnerIndex, playerCards, i, _showdown, _showdown2, _winnerIndex, playersHandsValue, winner;
 
-  return regeneratorRuntime.async(function handleWin$(_context9) {
+  return regeneratorRuntime.async(function handleWin$(_context10) {
     while (1) {
-      switch (_context9.prev = _context9.next) {
+      switch (_context10.prev = _context10.next) {
         case 0:
           console.log('Checking for winning players');
           playersLeft = [];
@@ -614,37 +655,37 @@ function handleWin(game) {
           }
 
           if (!(game.gameRound !== 'showdown')) {
-            _context9.next = 17;
+            _context10.next = 17;
             break;
           }
 
           if (!(playersLeft.length === 1)) {
-            _context9.next = 14;
+            _context10.next = 14;
             break;
           }
 
           winnerIndex = game.players.findIndex(function (player) {
             return player._id === playersLeft[0]._id;
           });
-          console.log('Winner: ' + game.players[winnerIndex], "won: " + game.pot + " chips");
+          gameMessage = 'Winner: ' + game.players[winnerIndex].name + " won " + game.pot + " chips";
           game.players[winnerIndex].chips += game.pot;
           game.pot = 0;
-          _context9.next = 11;
+          _context10.next = 11;
           return regeneratorRuntime.awrap(game.save());
 
         case 11:
-          return _context9.abrupt("return", game.players[winnerIndex]);
+          return _context10.abrupt("return", game.players[winnerIndex]);
 
         case 14:
-          return _context9.abrupt("return", false);
+          return _context10.abrupt("return", false);
 
         case 15:
-          _context9.next = 28;
+          _context10.next = 29;
           break;
 
         case 17:
           if (!(game.gameRound === 'showdown')) {
-            _context9.next = 28;
+            _context10.next = 29;
             break;
           }
 
@@ -654,47 +695,48 @@ function handleWin(game) {
             playerCards.push(playersLeft[i].cards);
           }
 
-          _showdown = showdown(parseCards(playerCards), parseCommunityCards(game.communityCards)), _showdown2 = _slicedToArray(_showdown, 2), _winnerIndex = _showdown2[0], PlayersHandsValue = _showdown2[1];
+          _showdown = showdown(parseCards(playerCards), parseCommunityCards(game.communityCards)), _showdown2 = _slicedToArray(_showdown, 2), _winnerIndex = _showdown2[0], playersHandsValue = _showdown2[1];
           winner = game.players[_winnerIndex];
           game.players[_winnerIndex].chips += game.pot;
           console.log('Winner: ' + winner, "won: " + game.pot + " chips");
+          gameMessage = 'Winner: ' + game.players[_winnerIndex].name + " won " + game.pot + " chips" + "with hand value:" + playersHandsValue[_winnerIndex];
           game.pot = 0;
-          _context9.next = 27;
+          _context10.next = 28;
           return regeneratorRuntime.awrap(game.save());
 
-        case 27:
-          return _context9.abrupt("return", winner);
-
         case 28:
+          return _context10.abrupt("return", winner);
+
+        case 29:
         case "end":
-          return _context9.stop();
+          return _context10.stop();
       }
     }
   });
 }
 
 function applyGameRules(gameID) {
-  var game, nullCount, i, _cards, cards, card, _card, _cards2, buttonIndex, smallBlindIndex, bigBlindIndex, _smallBlindIndex, _bigBlindIndex, nextTurnIndex, playersLeft, playersLeftInGame, _i2, playerWon;
+  var game, nullCount, i, _cards, cards, card, _card, _cards2, _i2, _i3, buttonIndex, smallBlindIndex, bigBlindIndex, _smallBlindIndex, _bigBlindIndex, nextTurnIndex, playersActed, playersLeftInGame, _i4, playersAllIn, _i5, playerWon;
 
-  return regeneratorRuntime.async(function applyGameRules$(_context10) {
+  return regeneratorRuntime.async(function applyGameRules$(_context11) {
     while (1) {
-      switch (_context10.prev = _context10.next) {
+      switch (_context11.prev = _context11.next) {
         case 0:
-          _context10.next = 2;
+          _context11.next = 2;
           return regeneratorRuntime.awrap(Game.findById(gameID));
 
         case 2:
-          game = _context10.sent;
+          game = _context11.sent;
           // console.log('game is ===== '+ game);
           console.log('Applying game rules to game ' + gameID);
 
           if (game) {
-            _context10.next = 7;
+            _context11.next = 7;
             break;
           }
 
           console.error('Game not found');
-          return _context10.abrupt("return");
+          return _context11.abrupt("return");
 
         case 7:
           nullCount = 0;
@@ -706,19 +748,19 @@ function applyGameRules(gameID) {
           } // Set community cards
 
 
-          _context10.t0 = game.gameRound;
-          _context10.next = _context10.t0 === 'preflop' ? 12 : _context10.t0 === 'flop' ? 17 : _context10.t0 === 'turn' ? 27 : _context10.t0 === 'river' ? 36 : _context10.t0 === 'waiting' ? 44 : 65;
+          _context11.t0 = game.gameRound;
+          _context11.next = _context11.t0 === 'preflop' ? 12 : _context11.t0 === 'flop' ? 17 : _context11.t0 === 'turn' ? 26 : _context11.t0 === 'river' ? 35 : _context11.t0 === 'waiting' ? 43 : 83;
           break;
 
         case 12:
           console.log('Preflop');
 
           if (!(nullCount !== 5)) {
-            _context10.next = 16;
+            _context11.next = 16;
             break;
           }
 
-          _context10.next = 16;
+          _context11.next = 16;
           return regeneratorRuntime.awrap(Game.updateOne({
             _id: gameID
           }, {
@@ -728,27 +770,25 @@ function applyGameRules(gameID) {
           }));
 
         case 16:
-          return _context10.abrupt("break", 67);
+          return _context11.abrupt("break", 85);
 
         case 17:
-          console.log('Flop');
-
           if (!(nullCount === 5)) {
-            _context10.next = 26;
+            _context11.next = 25;
             break;
           }
 
-          _context10.next = 21;
+          _context11.next = 20;
           return regeneratorRuntime.awrap(getCommunityCards(game, 3));
 
-        case 21:
-          _cards = _context10.sent;
+        case 20:
+          _cards = _context11.sent;
 
           _cards.push(null);
 
           _cards.push(null);
 
-          _context10.next = 26;
+          _context11.next = 25;
           return regeneratorRuntime.awrap(Game.updateOne({
             _id: gameID
           }, {
@@ -757,24 +797,24 @@ function applyGameRules(gameID) {
             }
           }));
 
-        case 26:
-          return _context10.abrupt("break", 67);
+        case 25:
+          return _context11.abrupt("break", 85);
 
-        case 27:
+        case 26:
           cards = [];
 
           if (!(nullCount === 2)) {
-            _context10.next = 35;
+            _context11.next = 34;
             break;
           }
 
-          _context10.next = 31;
+          _context11.next = 30;
           return regeneratorRuntime.awrap(getCommunityCards(game, 1));
 
-        case 31:
-          card = _context10.sent;
+        case 30:
+          card = _context11.sent;
           cards = [game.communityCards[0], game.communityCards[1], game.communityCards[2], card[0], null];
-          _context10.next = 35;
+          _context11.next = 34;
           return regeneratorRuntime.awrap(Game.updateOne({
             _id: gameID
           }, {
@@ -783,22 +823,22 @@ function applyGameRules(gameID) {
             }
           }));
 
-        case 35:
-          return _context10.abrupt("break", 67);
+        case 34:
+          return _context11.abrupt("break", 85);
 
-        case 36:
+        case 35:
           if (!(nullCount === 1)) {
-            _context10.next = 43;
+            _context11.next = 42;
             break;
           }
 
-          _context10.next = 39;
+          _context11.next = 38;
           return regeneratorRuntime.awrap(getCommunityCards(game, 1));
 
-        case 39:
-          _card = _context10.sent;
+        case 38:
+          _card = _context11.sent;
           _cards2 = [game.communityCards[0], game.communityCards[1], game.communityCards[2], game.communityCards[3], _card[0]];
-          _context10.next = 43;
+          _context11.next = 42;
           return regeneratorRuntime.awrap(Game.updateOne({
             _id: gameID
           }, {
@@ -807,28 +847,70 @@ function applyGameRules(gameID) {
             }
           }));
 
+        case 42:
+          return _context11.abrupt("break", 85);
+
         case 43:
-          return _context10.abrupt("break", 67);
+          _i2 = 0;
 
         case 44:
+          if (!(_i2 < game.players.length)) {
+            _context11.next = 56;
+            break;
+          }
+
+          if (!(game.players[_i2].chips <= 0)) {
+            _context11.next = 53;
+            break;
+          }
+
+          console.log('Player ' + game.players[_i2]._id + ' is out of chips');
+          _context11.next = 49;
+          return regeneratorRuntime.awrap(removePlayerFromGame(gameID, game.players[_i2]._id));
+
+        case 49:
+          _context11.next = 51;
+          return regeneratorRuntime.awrap(Game.findById(gameID));
+
+        case 51:
+          game = _context11.sent;
+          gameMessage = "Player " + game.players[_i2]._id + " is out of chips";
+
+        case 53:
+          _i2++;
+          _context11.next = 44;
+          break;
+
+        case 56:
+          _context11.next = 58;
+          return regeneratorRuntime.awrap(Game.findById(gameID));
+
+        case 58:
+          game = _context11.sent;
+          activePlayers = [];
+
+          for (_i3 = 0; _i3 < game.players.length; _i3++) {
+            if (!game.players[_i3].waitingForRoundStart && !game.players[_i3].connecting) activePlayers.push(game.players[_i3]);
+          }
+
           if (!(game.players.length < 2)) {
-            _context10.next = 48;
+            _context11.next = 65;
             break;
           }
 
           console.log('Not enough players to start game');
-          _context10.next = 64;
+          _context11.next = 82;
           break;
 
-        case 48:
+        case 65:
           if (!(game.players.length >= 2)) {
-            _context10.next = 64;
+            _context11.next = 82;
             break;
           }
 
           console.log('Starting game...'); // set the button
 
-          _context10.next = 52;
+          _context11.next = 69;
           return regeneratorRuntime.awrap(Game.updateOne({
             _id: gameID
           }, {
@@ -836,12 +918,13 @@ function applyGameRules(gameID) {
               "players.$[].betAmount": null,
               "players.$[].waitingForRoundStart": false,
               "players.$[].isFolded": false,
+              "players.$[].isAllIn": false,
               "players.$[].cards": [],
               communityCards: [null, null, null, null, null]
             }
           }));
 
-        case 52:
+        case 69:
           buttonIndex = game.players.findIndex(function (player) {
             return player._id === game.button;
           });
@@ -850,7 +933,7 @@ function applyGameRules(gameID) {
             game.button = game.players[0]._id; //TODO: make random
           }
 
-          if (game.players.length === 2) {
+          if (activePlayers.length === 2) {
             if (buttonIndex === 0) {
               game.button = game.players[1]._id;
               game.currentTurn = game.players[1]._id;
@@ -867,7 +950,9 @@ function applyGameRules(gameID) {
             if (bigBlindIndex === game.players.length) bigBlindIndex = 0;
             game.players[bigBlindIndex].hasBlinds = true;
             game.players[bigBlindIndex].betAmount = 2;
+            game.players[bigBlindIndex].chips -= 2;
             game.players[smallBlindIndex].betAmount = 1;
+            game.players[smallBlindIndex].chips -= 1;
           } else {
             if (buttonIndex === game.players.length - 1) {
               game.button = game.players[0]._id;
@@ -885,52 +970,61 @@ function applyGameRules(gameID) {
             if (nextTurnIndex === game.players.length) nextTurnIndex = 0;
             game.players[_bigBlindIndex].hasBlinds = true;
             game.players[_bigBlindIndex].betAmount = 2;
+            game.players[_bigBlindIndex].chips -= 2;
             game.players[_smallBlindIndex].betAmount = 1;
+            game.players[_smallBlindIndex].chips -= 1;
             game.currentTurn = game.players[nextTurnIndex]._id;
           }
 
           game.pot = 3;
           game.gameRound = 'preflop';
-          _context10.next = 59;
+          _context11.next = 76;
           return regeneratorRuntime.awrap(game.save());
 
-        case 59:
-          _context10.next = 61;
+        case 76:
+          _context11.next = 78;
           return regeneratorRuntime.awrap(Game.findById(gameID));
 
-        case 61:
-          game = _context10.sent;
-          _context10.next = 64;
+        case 78:
+          game = _context11.sent;
+          _context11.next = 81;
           return regeneratorRuntime.awrap(giveEachPlayerCards(game));
 
-        case 64:
-          return _context10.abrupt("break", 67);
+        case 81:
+          gameMessage = "Handing out cards";
 
-        case 65:
+        case 82:
+          return _context11.abrupt("break", 85);
+
+        case 83:
           console.error('Invalid game round: ' + game.gameRound);
-          return _context10.abrupt("break", 67);
+          return _context11.abrupt("break", 85);
 
-        case 67:
-          _context10.next = 69;
+        case 85:
+          _context11.next = 87;
           return regeneratorRuntime.awrap(Game.findById(gameID));
 
-        case 69:
-          game = _context10.sent;
-          playersLeft = checkIfPlayersActed(game);
+        case 87:
+          game = _context11.sent;
+          playersActed = checkIfPlayersActed(game);
           playersLeftInGame = [];
 
-          for (_i2 = 0; _i2 < game.players.length; _i2++) {
-            if (!game.players[_i2].isFolded && !game.players[_i2].waitingForRoundStart && !game.players[_i2].connecting) playersLeftInGame.push(game.players[_i2]);
+          for (_i4 = 0; _i4 < game.players.length; _i4++) {
+            if (!game.players[_i4].isFolded && !game.players[_i4].waitingForRoundStart && !game.players[_i4].connecting) playersLeftInGame.push(game.players[_i4]);
           }
 
-          console.log(playersLeft.length);
+          playersAllIn = [];
 
-          if (!(game.gameRound !== 'waiting' && playersLeft.length === 0 && playersLeftInGame !== 1)) {
-            _context10.next = 103;
+          for (_i5 = 0; _i5 < game.players.length; _i5++) {
+            if (game.players[_i5].isAllIn) playersAllIn.push(game.players[_i5]);
+          }
+
+          if (!(game.gameRound !== 'waiting' && playersActed.length === 0 && playersLeftInGame !== 1 && !(game.gameRound === 'showdown' && playersAllIn.length > 0))) {
+            _context11.next = 125;
             break;
           }
 
-          _context10.next = 77;
+          _context11.next = 96;
           return regeneratorRuntime.awrap(Game.updateOne({
             _id: gameID
           }, {
@@ -940,17 +1034,17 @@ function applyGameRules(gameID) {
             }
           }));
 
-        case 77:
-          _context10.t1 = game.gameRound;
-          _context10.next = _context10.t1 === 'waiting' ? 80 : _context10.t1 === 'preflop' ? 82 : _context10.t1 === 'flop' ? 85 : _context10.t1 === 'turn' ? 88 : _context10.t1 === 'river' ? 91 : _context10.t1 === 'showdown' ? 94 : 97;
+        case 96:
+          _context11.t1 = game.gameRound;
+          _context11.next = _context11.t1 === 'waiting' ? 99 : _context11.t1 === 'preflop' ? 101 : _context11.t1 === 'flop' ? 105 : _context11.t1 === 'turn' ? 109 : _context11.t1 === 'river' ? 113 : _context11.t1 === 'showdown' ? 116 : 119;
           break;
 
-        case 80:
+        case 99:
           console.error("Winning whilst waiting???");
-          return _context10.abrupt("break", 99);
+          return _context11.abrupt("break", 121);
 
-        case 82:
-          _context10.next = 84;
+        case 101:
+          _context11.next = 103;
           return regeneratorRuntime.awrap(Game.updateOne({
             _id: gameID
           }, {
@@ -959,11 +1053,12 @@ function applyGameRules(gameID) {
             }
           }));
 
-        case 84:
-          return _context10.abrupt("break", 99);
+        case 103:
+          gameMessage = "Handing out flop cards";
+          return _context11.abrupt("break", 121);
 
-        case 85:
-          _context10.next = 87;
+        case 105:
+          _context11.next = 107;
           return regeneratorRuntime.awrap(Game.updateOne({
             _id: gameID
           }, {
@@ -972,11 +1067,12 @@ function applyGameRules(gameID) {
             }
           }));
 
-        case 87:
-          return _context10.abrupt("break", 99);
+        case 107:
+          gameMessage = "Handing out turn card";
+          return _context11.abrupt("break", 121);
 
-        case 88:
-          _context10.next = 90;
+        case 109:
+          _context11.next = 111;
           return regeneratorRuntime.awrap(Game.updateOne({
             _id: gameID
           }, {
@@ -985,11 +1081,12 @@ function applyGameRules(gameID) {
             }
           }));
 
-        case 90:
-          return _context10.abrupt("break", 99);
+        case 111:
+          gameMessage = "Handing out river card";
+          return _context11.abrupt("break", 121);
 
-        case 91:
-          _context10.next = 93;
+        case 113:
+          _context11.next = 115;
           return regeneratorRuntime.awrap(Game.updateOne({
             _id: gameID
           }, {
@@ -998,79 +1095,78 @@ function applyGameRules(gameID) {
             }
           }));
 
-        case 93:
-          return _context10.abrupt("break", 99);
-
-        case 94:
-          _context10.next = 96;
-          return regeneratorRuntime.awrap(Game.updateOne({
-            _id: gameID
-          }, {
-            $set: {
-              gameRound: 'waiting'
-            }
-          }));
-
-        case 96:
-          return _context10.abrupt("break", 99);
-
-        case 97:
-          console.error('Wrong GameRound ' + gameID.gameRound);
-          return _context10.abrupt("break", 99);
-
-        case 99:
-          _context10.next = 101;
-          return regeneratorRuntime.awrap(applyGameRules(gameID));
-
-        case 101:
-          _context10.next = 115;
-          break;
-
-        case 103:
-          if (!(game.gameRound !== 'waiting' && (playersLeftInGame.length === 1 || game.gameRound === 'showdown'))) {
-            _context10.next = 115;
-            break;
-          }
-
-          _context10.next = 106;
-          return regeneratorRuntime.awrap(handleWin(game));
-
-        case 106:
-          playerWon = _context10.sent;
-
-          if (!playerWon) {
-            _context10.next = 115;
-            break;
-          }
-
-          _context10.t2 = console;
-          _context10.next = 111;
-          return regeneratorRuntime.awrap(Game.updateOne({
-            _id: gameID
-          }, {
-            $set: {
-              gameRound: 'waiting'
-            }
-          }));
-
-        case 111:
-          _context10.t3 = _context10.sent;
-
-          _context10.t2.log.call(_context10.t2, _context10.t3);
-
-          _context10.next = 115;
-          return regeneratorRuntime.awrap(applyGameRules(gameID));
-
         case 115:
-          _context10.next = 117;
-          return regeneratorRuntime.awrap(Game.findById(gameID));
+          return _context11.abrupt("break", 121);
 
-        case 117:
-          return _context10.abrupt("return", _context10.sent);
+        case 116:
+          _context11.next = 118;
+          return regeneratorRuntime.awrap(Game.updateOne({
+            _id: gameID
+          }, {
+            $set: {
+              gameRound: 'waiting'
+            }
+          }));
 
         case 118:
+          return _context11.abrupt("break", 121);
+
+        case 119:
+          console.error('Wrong GameRound ' + gameID.gameRound);
+          return _context11.abrupt("break", 121);
+
+        case 121:
+          _context11.next = 123;
+          return regeneratorRuntime.awrap(applyGameRules(gameID));
+
+        case 123:
+          _context11.next = 136;
+          break;
+
+        case 125:
+          if (!(game.gameRound !== 'waiting' && (playersLeftInGame.length === 1 || game.gameRound === 'showdown'))) {
+            _context11.next = 136;
+            break;
+          }
+
+          console.error('Game over');
+          _context11.next = 129;
+          return regeneratorRuntime.awrap(handleWin(game));
+
+        case 129:
+          playerWon = _context11.sent;
+
+          if (!playerWon) {
+            _context11.next = 136;
+            break;
+          }
+
+          _context11.next = 133;
+          return regeneratorRuntime.awrap(Game.updateOne({
+            _id: gameID
+          }, {
+            $set: {
+              gameRound: 'waiting'
+            }
+          }));
+
+        case 133:
+          gameMessage = "Player " + playerWon.name + " won " + game.pot + " chips";
+          _context11.next = 136;
+          return regeneratorRuntime.awrap(applyGameRules(gameID));
+
+        case 136:
+          _context11.next = 138;
+          return regeneratorRuntime.awrap(Game.findById(gameID));
+
+        case 138:
+          _context11.t2 = _context11.sent;
+          _context11.t3 = gameMessage;
+          return _context11.abrupt("return", [_context11.t2, _context11.t3]);
+
+        case 141:
         case "end":
-          return _context10.stop();
+          return _context11.stop();
       }
     }
   });
@@ -1078,6 +1174,7 @@ function applyGameRules(gameID) {
 
 module.exports = {
   resetGames: resetGames,
+  getGameData: getGameData,
   addPlayerToGame: addPlayerToGame,
   applyGameRules: applyGameRules,
   removePlayerFromGame: removePlayerFromGame,
