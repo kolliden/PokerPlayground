@@ -56,7 +56,6 @@ async function register() {
             alert(data.message, data.error);
         } else {
             console.log(data);
-            alert("User registered successfully!");
             window.location.href = "/index.htm"
         }
     }).catch((error) => {

@@ -22,7 +22,7 @@ async function getGameData(gameID) {
 
 async function removePlayerFromGame(gameID, playerID) {
     try {
-        const game = await Game.findById(await gameID);
+        const game = await Game.findById(gameID);
 
         if (!game) {
             console.error('Game not found ' + gameID, " player: " + playerID);
@@ -172,6 +172,7 @@ async function playerFold(gameID, playerID) {
 }
 
 async function playerBet(gameID, playerID, betAmount) {
+    console.log('Player ' + playerID + ' bet amount ' + betAmount);
     try {
         let game = await Game.findById(gameID);
         const playerIndex = game.players.findIndex((player) => player._id === playerID);
@@ -181,7 +182,6 @@ async function playerBet(gameID, playerID, betAmount) {
             console.error('Game not found');
             return game;
         }
-        // console.log('gameTurn: ' + game.currentTurn, 'playerID: ' + playerID);
         if (game.currentTurn !== playerID) {
             console.error('Not your turn');
             return game;
@@ -271,8 +271,8 @@ function parseCommunityCards(communityCards) {
 function checkIfPlayersActed(game) {
     let playersLeft = [];
     let biggestBet = 0;
-    console.log('Checking if all players acted');
-    console.log("Amount of players to be checked:" + game.players.length);
+    // console.log('Checking if all players acted');
+    // console.log("Amount of players to be checked:" + game.players.length);
     for (var i = 0; i < game.players.length; i++) {
         if (game.players[i].betAmount > biggestBet) {
             biggestBet = game.players[i].betAmount;
@@ -286,12 +286,12 @@ function checkIfPlayersActed(game) {
             game.players[i].isAllIn ||
             game.players[i].waitingForRoundStart ||
             game.players[i].connecting) {
-            console.log('players acted ' + i);
+            // console.log('players acted ' + i);
         } else if (
             game.players[i].betAmount !== biggestBet ||
             game.players[i].hasBlinds && game.players[i].betAmount === 2
         ) {
-            console.log('player has not acted ' + i);
+            // console.log('player has not acted ' + i);
             playersLeft.push(game.players[i]);
             amountOfPLayersLeft++;
         }

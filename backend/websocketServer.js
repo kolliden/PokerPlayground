@@ -15,7 +15,7 @@ function initializeGameServer(wss) {
     const broadcastFormattedData = (data, gameMessage, clients) => {
         clients.forEach(function (ws , userId) {
             formatted = formatDataForClient(data, userId);
-            formatted.controllingPlayerIndex = data.players.findIndex((player) => player._id === userId)+1;
+            formatted.controllingPlayerIndex = data.players.findIndex((player) => player._id === userId);
             sendMessage(ws, JSON.stringify({ eventType: "updateGameState", data: formatted, gameMessages: [gameMessage] }));
         });
     };
@@ -23,7 +23,7 @@ function initializeGameServer(wss) {
     function sendMessage(client, message) {
         //send messsage to one client
         if (client.readyState === WebSocket.OPEN) {
-            console.log("sent message to client " + userId, "message: " + message);
+            // console.log("sent message to client " + userId, "message: " + message);
             client.send(message);
         }
     }
@@ -33,9 +33,9 @@ function initializeGameServer(wss) {
     // WebSocket server logic
     wss.on('connection', async (ws, req) => {
         console.log('WebSocket client connected...');
-        userId = req.session.user._id;
+        userId = req.session.user._id.toString();
 
-        let data = await addPlayerToGame(req.session.user._id);
+        let data = await addPlayerToGame(userId);
         const gameId = data._id;
 
         clients.set(userId, ws);
@@ -45,7 +45,7 @@ function initializeGameServer(wss) {
 
         console.log(req.session.user.username + ' is connecting to the server. ' + " To game: " + gameId);
 
-        [data, gameMessage] = await applyGameRules(req.session.user.gameId);
+        [data, gameMessage] = await applyGameRules(gameId);
         if (data) {
             broadcastFormattedData(data, gameMessage, clients);
         }
@@ -62,15 +62,16 @@ function initializeGameServer(wss) {
                     case "playerAction":
                         if (message.data.action === "bet") {
                             if (data) {
-                                let data = await playerBet(req.session.user.gameId, userId, message.data.amount);
+                                console.log("Should not be false!!!" + (req.session.user._id.toString() == userId))
+                                let data = await playerBet(req.session.user.gameId, req.session.user._id.toString(), message.data.amount);
                                 [data, gameMessage] = await applyGameRules(req.session.user.gameId);
 
                                 broadcastFormattedData(data, gameMessage, clients);
                             }
                         } else if (message.data.action === "fold") {
                             if (data) {
-                                await playerFold(message.gameID, message.sender);
-                                [data, gameMessage] = await applyGameRules(metadata.gameID);
+                                await playerFold(gameId, req.session.user._id.toString());
+                                [data, gameMessage] = await applyGameRules(req.session.user.gameId);
 
                                 broadcastFormattedData(data, gameMessage, clients);
                             }
@@ -79,7 +80,7 @@ function initializeGameServer(wss) {
                     case "chatMessage":
                         console.log("chatMessage: " + JSON.stringify(message));
                         if (message.data.message) {
-                            data = await getGameData(message.gameID);
+                            data = await getGameData(req.session.user.gameId);
                             let playerName = data.players.find((player) => player._id === message.sender).name;
                             let temp = { data: { message: message.data.message, player: playerName }, eventType: "chatMessage" }
                             console.log(temp);
@@ -97,8 +98,8 @@ function initializeGameServer(wss) {
         // WebSocket close handling
         ws.on("close", () => {
             console.log("WebSocket close ")
-            removePlayerFromGame(gameId, userId);
-            clients.delete(userId);
+            removePlayerFromGame(req.session.user.gameId, req.session.user._id.toString());
+            clients.delete(req.session.user._id.toString());
         });
     });
     wss.on('error', err => {
