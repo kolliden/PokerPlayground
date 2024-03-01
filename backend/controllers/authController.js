@@ -21,10 +21,11 @@ async function register(req, res) {
                 message: "It seems you already have an account, please log in instead.",
             });
         const savedUser = await newUser.save(); // save new user into the database
-        const { password, role, ...user_data } = savedUser._doc; // return user object without the password
+        const { role, ...user_data } = savedUser._doc; // return user object without the password
+        delete user_data.password;
 
         let options = {
-            maxAge: 20 * 60 * 1000, // would expire in 20minutes
+            maxAge: 60 * 60 * 1000, // would expire in 20minutes
             httpOnly: true, // The cookie is only accessible by the web server
             // secure: true,
             sameSite: "None",
@@ -34,7 +35,7 @@ async function register(req, res) {
         req.session.user = user_data;
         req.session.save();
 
-        const token = user.generateAccessJWT(); // generate session token for user
+        const token = savedUser.generateAccessJWT(); // generate session token for user
         res.cookie('SessionID', token, options)
         .status(200).json({
             status: "success",
@@ -86,7 +87,7 @@ const login = async (req, res) => {
         const { password, role, ...user_data } = user._doc;
 
         let options = {
-            maxAge: 20 * 60 * 1000, // would expire in 20minutes
+            maxAge: 60 * 60 * 1000, // would expire in 60minutes
             httpOnly: true, // The cookie is only accessible by the web server
             // secure: true,
             sameSite: "None",
