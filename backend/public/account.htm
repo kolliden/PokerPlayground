@@ -16,12 +16,26 @@
     </nav>
 
     <div class="account-info">
-        <ul id="account-stats">
-        </ul>
+      <h1>Account Information</h1>
+      <button class="account-update-btn" onclick="updateStats();">Edit</button>
 
-        <button class="view-detailed-hand-history-button">View Detailed Hand History</button>
+      <ul id="account-stats">
+        <li>Balance: <span id="balance"></span></li>
+        <li>Rank: <span id="rank"></span></li>
+        <li>Username: <span id="username"></span></li>
+        <li>Email: <span id="email"></span></li>
+        <li>Phone: <span id="phoneNumber"></span></li>
+        <li>Games Played: <span id="gamesPlayed"></span></li>
+        <li>Wins: <span id="wins"></span></li>
+        <li>Losses: <span id="losses"></span></li>
+        <li>Member since: <span id="createdAt"></span></li>
+      </ul>
 
-        <button class="account-logout-btn" onclick="logout();">Logout</button>
+      <button class="view-detailed-hand-history-button">
+        View Detailed Hand History
+      </button>
+
+      <button class="account-logout-btn" onclick="logout();">Logout</button>
     </div>
   </body>
   <script src="js/auth.js"></script>

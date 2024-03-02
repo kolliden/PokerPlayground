@@ -3,8 +3,8 @@ const unorderStatItemList = document.getElementById("account-stats");
 
 fetch(
     domain + "/api/auth/me", {
-        method: "GET",
-    }
+    method: "GET",
+}
 ).then(response => {
     if (!response.ok) {
         console.error(`HTTP error! Status: ${response.status}`);
@@ -15,9 +15,10 @@ fetch(
     console.log(data.user);
     for (let key in data.user) {
         if (data.user.hasOwnProperty(key)) {
-            let listItem = document.createElement("li");
-            listItem.appendChild(document.createTextNode(`${key}: ${data.user[key]}`));
-            unorderStatItemList.appendChild(listItem);
+            let listItem = document.getElementById(key);
+            if (listItem) {
+                listItem.innerHTML = data.user[key];
+            }
         }
     }
 }).catch((error) => {
