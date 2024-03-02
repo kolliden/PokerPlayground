@@ -17,6 +17,7 @@ class HandTypeEvaluator {
     }
 
     highCard = (values) => {
+        values = values.sort((a, b) => b - a);
         this.strength = BaseStrength.HIGH_CARD + 60 * values[0] + 6 * values[1] + .6 * values[2] + .06 * values[3] + .006 * values[4];
         return ("High Card: " + value_names[values[0]]);
     }

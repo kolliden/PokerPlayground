@@ -214,8 +214,11 @@ async function playerBet(gameID, playerID, betAmount) {
             }
             game.players[playerIndex].chips -= parseInt(betAmount);
             game.pot = parseInt(betAmount) + parseInt(game.pot);
-
-            gameMessage = 'Player ' + game.players[playerIndex].name + " bet " + betAmount + " chips";
+            if(betAmount !== 0){
+                gameMessage = 'Player ' + game.players[playerIndex].name + " bet " + betAmount + " chips";
+            } else {
+                gameMessage = 'Player ' + game.players[playerIndex].name + " checked";
+            }
         }
 
         await advanceTurn(gameID);
@@ -329,7 +332,7 @@ async function handleWin(game) {
         let winner = game.players[winnerIndex];
 
         game.players[winnerIndex].chips += game.pot;
-        console.log('Winner: ' + winner, "won: " + game.pot + " chips");
+        // console.log('Winner: ' + winner, "won: " + game.pot + " chips");
         gameMessage = 'Winner: ' + game.players[winnerIndex].name + " won " + game.pot + " chips" + "with hand value:" + playersHandsValue[winnerIndex];
 
         game.pot = 0;

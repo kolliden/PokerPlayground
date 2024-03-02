@@ -190,14 +190,15 @@ nav {
 }
 
 .chat {
-  padding-top: 3rem;
   padding-right: 4rem;
   padding-left: 0.5rem;
+  padding-top: 0.5rem;
   padding-bottom: 0.5rem;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   overflow-y: scroll;
+  height: 8rem;
   background-color: var(--hover-grey);
 }
 .game-messages {
@@ -213,6 +214,8 @@ nav {
   flex-direction: column;
   justify-content: flex-end;
   height: 100%;
+  overflow-y: scroll !important;
+
 }
 #messages>li {
   margin-bottom: 0.2rem;

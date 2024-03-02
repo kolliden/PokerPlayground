@@ -4,8 +4,8 @@ const WebSocket = require('ws');
 
 function initializeGameServer(wss) {
     // Function to broadcast messages to all connected clients
-    function broadcast(message) {
-        wss.clients.forEach((client) => {
+    function broadcast(message, clients) {
+        clients.forEach((client) => {
             if (client.readyState === WebSocket.OPEN) {
                 client.send(JSON.stringify(message));
                 // console.log("sent message to  via broadcast " + client, "message: " + message)
@@ -79,9 +79,8 @@ function initializeGameServer(wss) {
                         console.log("chatMessage: " + JSON.stringify(message));
                         if (message.data.message) {
                             data = await getGameData(req.session.user.gameId);
-                            let playerName = data.players.find((player) => player._id === message.sender).name;
+                            let playerName = data.players.find((player) => player._id === req.session.user._id.toString()).name;
                             let temp = { data: { message: message.data.message, player: playerName }, eventType: "chatMessage" }
-                            console.log(temp);
                             broadcast(temp, clients);
                         }
                         break;
