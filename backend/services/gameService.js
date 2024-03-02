@@ -1,6 +1,6 @@
 const Game = require('../models/game');
 const User = require('../models/user');
-const { showdown } = require('../utils/handSolver');
+const { showdown, getHandTypes } = require('../utils/handSolver');
 
 let gameMessage = "";
 
@@ -250,6 +250,7 @@ function getValue(valueStr) {
 function parseCommunityCards(communityCards) {
     let newCards = [];
     for (var i = 0; i < communityCards.length; i++) {
+        if(communityCards[i] === null) continue;
         newCards.push(Array.from(communityCards[i]));
         if (newCards[i][0] === 'T') {
             newCards[i][0] = 10;
@@ -524,8 +525,19 @@ async function applyGameRules(gameID) {
             await applyGameRules(gameID);
         }
     }
+    game = await Game.findById(gameID);
 
-    return [await Game.findById(gameID), gameMessage];
+    let playerCards = [];
+
+    for (var i = 0; i < game.players.length; i++) {
+        playerCards.push(game.players[i].cards);
+    }
+
+    const handTypes = getHandTypes(parseCards(playerCards), parseCommunityCards(game.communityCards));
+    game.handTypes = handTypes;
+    await game.save();
+
+    return [game, gameMessage];
 }
 
 

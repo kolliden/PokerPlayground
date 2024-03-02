@@ -33,6 +33,10 @@ const gameSchema = new mongoose.Schema({
             },
         },
     ],
+    handTypes: [{
+        type: String,
+        default: "High Card",
+    }],
     communityCards: [String],
     remainingCardDeck: [String],
     currentTurn: String,

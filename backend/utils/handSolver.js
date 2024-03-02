@@ -158,22 +158,22 @@ function determine(hand) {
 function showdown(hands, board) {
     let hand_occurrence = { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0 }
     let h_strength = {};
-    console.log("Board: " + board);
-    console.log("Hands: " + hands);
+    // console.log("Board: " + board);
+    // console.log("Hands: " + hands);
     for (let i = 0; i < hands.length; i++) {
         hte = new HandTypeEvaluator();
         const user_hand = hands[i].concat(board);
-        console.log("User Hand: " + user_hand);
+        // console.log("User Hand: " + user_hand);
         let [values, vset, suits, all_cards] = determine(user_hand);
         let hand_type = hte.evalHand(values, suits, vset, all_cards);
-        console.log(hte.strength);
-        console.log("Hand: " + hand_type);
+        // console.log(hte.strength);
+        // console.log("Hand: " + hand_type);
 
         hand_occurrence[Math.floor(hte.strength / 1000 - 1)] += 1;
         h_strength[i] = hte.strength;
     }
-    console.log("Hand Occurrence: " + hand_occurrence);
-    console.log(h_strength);
+    // console.log("Hand Occurrence: " + hand_occurrence);
+    // console.log(h_strength);
     //get index of winner
 
     let winner = 0;
@@ -185,6 +185,18 @@ function showdown(hands, board) {
         }
     }
     return [winner, h_strength];
+}
+function getHandTypes(hands, board){
+    let playerHandTypes = [];
+    for (let i = 0; i < hands.length; i++) {
+        hte = new HandTypeEvaluator();
+        const user_hand = hands[i].concat(board);
+        // console.log("User Hand: " + user_hand);
+        let [values, vset, suits, all_cards] = determine(user_hand);
+        let hand_type = hte.evalHand(values, suits, vset, all_cards);
+        playerHandTypes.push(hand_type);
+    }
+    return playerHandTypes;
 }
 
 const ho_names = ('High Card', 'Pair', 'Two-Pair', 'Three of a Kind', 'Straight', 'Flush', 'Full House',
@@ -201,4 +213,5 @@ const suit_names = { "H": '♥', "S": '♠', "C": '♣', "D": '♦', 0: '' }
 
 module.exports = {
     showdown,
+    getHandTypes,
 }

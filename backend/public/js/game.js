@@ -15,6 +15,7 @@ const player6 = document.getElementById("playerPosition6");
 
 const table = document.getElementsByClassName("table");
 const potHtml = document.getElementById("pot-text");
+const handInfoTxt = document.getElementById("hand-info-text");
 
 const messageInput = document.getElementById("game-message-input");
 
@@ -283,6 +284,8 @@ function updateTable() {
         // if (player.button) {
         //     table.querySelector(".player-button").style.transform = 'rotate(' + i * 45 + 'deg)';
         // }
+
+        handInfoTxt.innerHTML = "[ "+ gameState.players[gameState.controllingPlayerIndex].handType  +" ]"
 
     }
     for (var i = gameState.players.length; i <= 5; i++) {

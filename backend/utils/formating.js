@@ -34,8 +34,10 @@ function formatDataForClient(data, playerID) {
         if (data.gameRound !== "showdown" && data.gameRound !== "waiting") {
             if (data.players[i]._id === playerID) {
                 formattedData.players[i].cards = data.players[i].cards;
+                formattedData.players[i].handType = data.handTypes[i];
             } else {
-                formattedData.players[i].cards = [null, null]
+                formattedData.players[i].cards = [null, null];
+                formattedData.players[i].handType = null;
             }
             if (data.currentTurn === data.players[i]._id) {
                 formattedData.players[i].playerTurn = true;

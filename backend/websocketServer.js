@@ -62,7 +62,6 @@ function initializeGameServer(wss) {
                     case "playerAction":
                         if (message.data.action === "bet") {
                             if (data) {
-                                console.log("Should not be false!!!" + (req.session.user._id.toString() == userId))
                                 let data = await playerBet(req.session.user.gameId, req.session.user._id.toString(), message.data.amount);
                                 [data, gameMessage] = await applyGameRules(req.session.user.gameId);
 
@@ -72,7 +71,6 @@ function initializeGameServer(wss) {
                             if (data) {
                                 await playerFold(gameId, req.session.user._id.toString());
                                 [data, gameMessage] = await applyGameRules(req.session.user.gameId);
-
                                 broadcastFormattedData(data, gameMessage, clients);
                             }
                         }
