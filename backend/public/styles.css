@@ -1,10 +1,22 @@
+/* Fonts */
+@font-face {
+  font-family: 'Roboto';
+  src: url('roboto.eot'); /* IE9 Compat Modes */
+  src: url('roboto.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+  url('roboto.woff') format('woff'), /* Modern Browsers */
+  url('roboto.ttf')  format('truetype'), /* Safari, Android, iOS */
+  url('roboto.svg#svgFontName') format('svg'); /* Legacy iOS */
+}
+
 :root {
---page-background-color: #f5f5f5;
---border-grey: 1px solid #c4c4c4;
---hover-grey: #707070;
---blue-background-color: #76adff;
---border-blue: var(--blue-background-color);
---button-background-color: #14f100;
+  --page-background-color: #f5f5f5;
+  --border-grey: 1px solid #c4c4c4;
+  --border-grey-color: #c4c4c4;
+  --hover-grey: #707070;
+  --blue-background-color: #76adff;
+  --border-blue: var(--blue-background-color);
+  --button-background-color: #14f100;
+  --danger-color: #b50000;
 }
 
 * {
@@ -12,8 +24,9 @@
   padding: 0;
   margin: 0;
 }
-html, body {
-  font-family: Arial, sans-serif;
+html,
+body {
+  font-family: Songti SC, Arial, sans-serif;
   background-color: var(--page-background-color);
 }
 
@@ -30,7 +43,8 @@ a {
   text-decoration: none;
   color: var(--border-grey);
 }
-a:hover, a:focus {
+a:hover,
+a:focus {
   color: var(--hover-grey);
 }
 
@@ -57,6 +71,25 @@ button:active {
   transform: translateY(3px);
 }
 
+.danger {
+  color: var(--danger-color) !important;
+}
+
+footer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--page-background-color);
+  border-top: 2px solid var(--border-blue);
+  padding: 2rem;
+  height: fit-content;
+  background-color: var(--border-grey-color);
+}
+
+/* ========================================================================== */
+/* Nav */
+
 nav {
   display: flex;
   justify-content: space-between;
@@ -64,16 +97,67 @@ nav {
   background-color: var(--page-background-color);
   padding-left: 2rem;
   border-bottom: 2px solid var(--border-blue);
-  height:8vh;
+  height: 8vh;
+}
+nav > h1 {
+  font-family:Songti SC,Georgia, 'Times New Roman', Times, serif,
+}
+
+nav > ul {
+  display: flex;
+  align-items: center;
+  justify-content: right;
+  width: 30%;
+}
+
+.menu-container {
+  display: inline-flex;
+  flex-direction: row;
+  padding: 0.5rem;
+  cursor: pointer;
+}
+
+.menu {
+  position: relative;
+}
+.menu img {
+  width: 2rem;
+  height: 2rem;
+}
+
+.menu > .menu-content {
+  display: none;
+  position: absolute;
+  top: 3rem;
+  right: -1rem;
+  background-color: var(--blue-background-color);
+  padding-right: 1rem;
+  border-radius: 0.5rem;
+  flex-direction: column;
+}
+
+.menu:focus-within > .menu-content {
+  display: flex;
+}
+
+.menu a {
+  padding: 0.5rem;
+  display: inline-block;
+  color: #000000;
+}
+.player-progression {
+  padding: 0 1rem;
+  border-left: var(--border-grey);
+  border-right: var(--border-grey);
 }
 
 /* Poker Table */
 .table {
   padding: 20px;
   background-image: url(assets/poker-table-made-green-cloth-600nw-1653402223.jpg.webp);
-  background-size:contain;
+  background-size: contain;
   background-repeat: no-repeat;
-  background-position:center;
+  background-position: center;
   height: 86vh;
   display: flex;
   align-items: center;
@@ -100,7 +184,7 @@ nav {
 }
 .player-action {
   background-color: var(--icy-gray-500);
-  padding : 1rem;
+  padding: 1rem;
   border-radius: 0.25rem;
 }
 .player-wrapper {
@@ -118,15 +202,15 @@ nav {
   left: 20rem;
 }
 #playerPosition3 {
-  top:20rem;
+  top: 20rem;
   left: 10rem;
 }
 #playerPosition4 {
-  top:5rem;
+  top: 5rem;
   left: 20rem;
 }
 #playerPosition5 {
-  top:5rem;
+  top: 5rem;
   right: 20rem;
 }
 #playerPosition6 {
@@ -215,11 +299,10 @@ nav {
   justify-content: flex-end;
   height: 100%;
   overflow-y: scroll !important;
-
 }
-#messages>li {
+#messages > li {
   margin-bottom: 0.2rem;
-  color:#fff;
+  color: #fff;
 }
 
 #game-message-input-wrapper {
@@ -265,7 +348,6 @@ nav {
 
 .active {
   animation: blinker 1s ease-in-out infinite;
-
 }
 
 @keyframes blinker {
@@ -279,7 +361,7 @@ nav {
   display: flex;
   flex-direction: row;
   height: fit-content;
-  bottom:0;
+  bottom: 0;
 }
 
 #raiseInput {
@@ -287,7 +369,7 @@ nav {
   display: flex;
   flex-direction: row;
   height: 3rem;
-  right:0;
+  right: 0;
   transform: translateY(-100%);
 }
 #raiseInputField {
@@ -306,7 +388,7 @@ nav {
 }
 
 /* Firefox */
-#raiseInputField[type=number] {
+#raiseInputField[type="number"] {
   -moz-appearance: textfield;
 }
 
@@ -316,7 +398,7 @@ nav {
   font-size: small;
   height: 3rem;
 }
-#betBtnWrapper>button {
+#betBtnWrapper > button {
   padding: 0.4rem;
   border-radius: 0.2rem;
   font-size: 0.1rem;
@@ -335,12 +417,12 @@ nav {
 }
 .raiseOption {
   margin: 0 0.2rem;
-  padding: .5rem;
+  padding: 0.5rem;
   height: 3rem;
   font-size: medium;
 }
 
-
+/* ========================================================================== */
 /* Login/register Forms */
 .form-logo {
   position: absolute;
@@ -371,14 +453,14 @@ nav {
   font-size: 1rem;
   border-radius: 0.5rem;
   border: var(--border-grey);
-  padding-left:1rem;
+  padding-left: 1rem;
 }
 
 .form-input:focus {
   outline: none;
 }
-.question-text{
-  margin-top:0.5rem;
+.question-text {
+  margin-top: 0.5rem;
   font-size: 1rem;
 }
 
@@ -398,31 +480,33 @@ nav {
   width: 15rem;
   text-align: center;
   font-size: medium;
-  height:max-content;
+  height: max-content;
 }
-
 
 /* ========================================================================== */
 /* Games Page */
 .game-list-wrapper {
   display: flex;
   flex-direction: row;
-  overflow-x:scroll;
+  overflow-x: scroll;
 }
 .game-card {
+  display: flex;
   background-color: var(--blue-background-color);
   padding: 1rem;
-  margin: .5rem;
-  border-radius: 2rem;
+  margin: 0.5rem;
+  border-radius: 0.5rem;
+  flex-direction: row;
+  align-items: end;
 }
 .game-card:hover {
-  background-color: var(--color-primary-a20);
+  background-color: var(--border-blue);
 }
-
-.game-card>button{
-  padding:0 4rem;
-  height: fit-content;
-  border-radius: 1rem;
+.game-info {
+  padding-left: 1rem;
+}
+.game-type {
+  margin: 2rem;
 }
 
 /*===========================================================================*/
@@ -434,7 +518,7 @@ nav {
   flex-direction: column;
   height: 100vh;
 }
-.account-info>button{
+.account-info > button {
   background-color: var(--color-primary-a10);
   height: fit-content;
   width: fit-content;
@@ -448,17 +532,16 @@ nav {
   background-color: var(--blue-background-color);
 }
 
-#account-stats{
+#account-stats {
   display: flex;
   flex-direction: column;
   width: fit-content;
 }
-#account-stats>li{
+#account-stats > li {
   margin: 0rem 0;
   color: var(--color-primary-a0);
   margin: 0.2rem 0;
   background-color: var(--blue-background-color);
   padding: 1rem;
   border-radius: 0.2rem;
-
 }

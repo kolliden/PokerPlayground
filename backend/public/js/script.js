@@ -5,6 +5,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (!token) {
       // If token doesn't exist, redirect to login page
-    //   window.location.href = pre + '/login.htm';
+      // window.location.href = pre + '/login.htm';
     }
   });

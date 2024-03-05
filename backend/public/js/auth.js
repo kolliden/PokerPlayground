@@ -52,10 +52,8 @@ async function register() {
     }).then((data) => {
         console.log(data);
         if (data.message || data.error) {
-            console.log(data);
             alert(data.message, data.error);
         } else {
-            console.log(data);
             window.location.href = "/index.htm"
         }
     }).catch((error) => {
@@ -81,15 +79,12 @@ async function login() {
         if (!response.ok) {
             console.error(`HTTP error! Status: ${response.status}`);
         }
-        console.log(response);
         return response.json();
     }).then((data) => {
-        console.log(data);
         if (data.message) {
             if (data.status === "success") {
                 window.location.href = "/index.htm"
             }
-            alert(data.message);
         }
     }).catch((error) => {
         console.error("Error:", error);
@@ -106,7 +101,6 @@ async function logout() {
         }
         return response.json();
     }).then((data) => {
-        console.log(data);
         if (data.message) {
             if (data.message === "Logout successful.") {
                 window.location.href = "/login.htm"
@@ -126,10 +120,8 @@ async function getUserData() {
         if (!response.ok) {
             console.error(`HTTP error! Status: ${response.status}`);
         }
-        console.log(response);
         return response.json();
     }).then((data) => {
-        console.log(data);
         User = data.user;
     }).catch((error) => {
         console.error("Error:", error);

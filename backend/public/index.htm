@@ -1,100 +1,205 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Poker Table</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="icon" type="image/x-icon" href="/assets/favicon.ico" />
+    <script src="js/updateNavStats.js" defer></script>
+    <script src="js/auth.js" defer></script>
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <title>Poker Table</title>
-  <link rel="stylesheet" href="styles.css" />
-  <link rel="icon" type="image/x-icon" href="/assets/favicon.ico">
-  <script src="js/auth.js" defer></script>
+  <body>
+    <nav>
+      <h1>Poker Ranked</h1>
+      <ul>
+        <li><a href="index.htm">Games</a></li>
+        <li><a href="solver.htm">Solver</a></li>
+        <li class="player-progression">
+          <p>Rank: <span id="nav-rank"></span></p>
+          <p>xp: <span id="nav-xp"></span></p>
+        </li>
+        <li class="menu-container">
+          <div class="menu" tabindex="0">
+            <img src="assets/line-horizontal-3.svg" alt="Three Bars" />
+            <div class="menu-content">
+              <a href="account.htm">Account</a>
+              <a href="about.htm">About</a>
+              <a href="contact.htm">Contact</a>
+              <a href="help.htm">Help</a>
+              <a href="logout" class="danger" onclick="logout()">Logout</a>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </nav>
+    <section class="header"></section>
+    <!-- list of active games -->
+    <section class="game-type">
+      <h2>Featured</h2>
+      <div class="game-list-wrapper">
+        <button class="game-card" onclick="window.location.href = '/poker.htm'">
+          <img src="assets/favicon.ico" alt="" />
+          <div class="game-info">
+            <h3>6 players</h3>
+            <p>Blinds: 1/2</p>
+          </div>
+        </button>
+        <button class="game-card" onclick="window.location.href = '/poker.htm'">
+          <img src="assets/favicon.ico" alt="" />
+          <div class="game-info">
+            <h3>6 players</h3>
+            <p>Blinds: 1/2</p>
+          </div>
+        </button>
+        <button class="game-card" onclick="window.location.href = '/poker.htm'">
+          <img src="assets/favicon.ico" alt="" />
+          <div class="game-info">
+            <h3>6 players</h3>
+            <p>Blinds: 1/2</p>
+          </div>
+        </button>
+        <button class="game-card" onclick="window.location.href = '/poker.htm'">
+          <img src="assets/favicon.ico" alt="" />
+          <div class="game-info">
+            <h3>6 players</h3>
+            <p>Blinds: 1/2</p>
+          </div>
+        </button>
+      </div>
+    </section>
+    <section class="game-type">
+      <h2>No-limit Holdem</h2>
+      <div class="game-list-wrapper">
+        <button class="game-card" onclick="window.location.href = '/poker.htm'">
+          <img src="assets/favicon.ico" alt="" />
+          <div class="game-info">
+            <h3>6 players</h3>
+            <p>Blinds: 1/2</p>
+          </div>
+        </button>
+        <button class="game-card" onclick="window.location.href = '/poker.htm'">
+          <img src="assets/favicon.ico" alt="" />
+          <div class="game-info">
+            <h3>6 players</h3>
+            <p>Blinds: 1/2</p>
+          </div>
+        </button>
+        <button class="game-card" onclick="window.location.href = '/poker.htm'">
+          <img src="assets/favicon.ico" alt="" />
+          <div class="game-info">
+            <h3>6 players</h3>
+            <p>Blinds: 1/2</p>
+          </div>
+        </button>
+        <button class="game-card" onclick="window.location.href = '/poker.htm'">
+          <img src="assets/favicon.ico" alt="" />
+          <div class="game-info">
+            <h3>6 players</h3>
+            <p>Blinds: 1/2</p>
+          </div>
+        </button>
+      </div>
+    </section>
+    <section class="game-type">
+      <h2>Limit Holdem</h2>
+      <div class="game-list-wrapper">
+        <button class="game-card" onclick="window.location.href = '/poker.htm'">
+          <img src="assets/favicon.ico" alt="" />
+          <div class="game-info">
+            <h3>6 players</h3>
+            <p>Blinds: 1/2</p>
+          </div>
+        </button>
+        <button class="game-card" onclick="window.location.href = '/poker.htm'">
+          <img src="assets/favicon.ico" alt="" />
+          <div class="game-info">
+            <h3>6 players</h3>
+            <p>Blinds: 1/2</p>
+          </div>
+        </button>
+        <button class="game-card" onclick="window.location.href = '/poker.htm'">
+          <img src="assets/favicon.ico" alt="" />
+          <div class="game-info">
+            <h3>6 players</h3>
+            <p>Blinds: 1/2</p>
+          </div>
+        </button>
+        <button class="game-card" onclick="window.location.href = '/poker.htm'">
+          <img src="assets/favicon.ico" alt="" />
+          <div class="game-info">
+            <h3>6 players</h3>
+            <p>Blinds: 1/2</p>
+          </div>
+        </button>
+      </div>
+    </section>
+    <section class="game-type">
+      <h2>Practice against Bots</h2>
+      <div class="game-list-wrapper">
+        <button class="game-card" onclick="window.location.href = '/poker.htm'">
+          <img src="assets/favicon.ico" alt="" />
+          <div class="game-info">
+            <h3>6 players</h3>
+            <p>Blinds: 1/2</p>
+          </div>
+        </button>
+        <button class="game-card" onclick="window.location.href = '/poker.htm'">
+          <img src="assets/favicon.ico" alt="" />
+          <div class="game-info">
+            <h3>6 players</h3>
+            <p>Blinds: 1/2</p>
+          </div>
+        </button>
+        <button class="game-card" onclick="window.location.href = '/poker.htm'">
+          <img src="assets/favicon.ico" alt="" />
+          <div class="game-info">
+            <h3>6 players</h3>
+            <p>Blinds: 1/2</p>
+          </div>
+        </button>
+        <button class="game-card" onclick="window.location.href = '/poker.htm'">
+          <img src="assets/favicon.ico" alt="" />
+          <div class="game-info">
+            <h3>6 players</h3>
+            <p>Blinds: 1/2</p>
+          </div>
+        </button>
+      </div>
+    </section>
+    <!-- Tournaments -->
+    <section class="tournaments"></section>
 
-</head>
+    <footer>
+      <p>&copy; 2021 Poker Ranked</p>
 
-<body>
-  <nav>
-    <h1>Poker Ranked</h1>
-    <ul>
-      <li><a href="index.htm">Games</a></li>
-      <li><a href="rank.htm">Rank</a></li>
-      <li><a href="account.htm">Account</a></li>
-    </ul>
-  </nav>
-  <section class="header">
+      <div class="footer-links">
+        <a href="about.htm">About</a>
+        <a href="contact.htm">Contact</a>
+        <a href="help.htm">Help</a>
+      </div>
 
-  </section>
-  <!-- list of active games -->
-  <section class="">
-    <h2>No-limit Holdem</h2>
-    <div class="game-list-wrapper">
-      <div class="game-card">
-        <div class="game-info">
-          <h3>6 players</h3>
-          <p>Blinds: 1/2</p>
-        </div>
-        <button onclick="window.location.href = '/poker.htm'">Join</button>
+      <div class="footer-socials">
+        <a href="https://www.facebook.com" target="_blank">
+          <img src="assets/facebook.svg" alt="Facebook" />
+        </a>
+        <a href="https://www.twitter.com" target="_blank">
+          <img src="assets/twitter.svg" alt="Twitter" />
+        </a>
+        <a href="https://www.instagram.com" target="_blank">
+          <img src="assets/instagram.svg" alt="Instagram" />
+        </a>
       </div>
-      <div class="game-card">
-        <div class="game-info">
-          <h3>6 players</h3>
-          <p>Blinds: 1/2</p>
-        </div>
-        <button>Join</button>
-      </div>
-      <div class="game-card">
-        <div class="game-info">
-          <h3>6 players</h3>
-          <p>Blinds: 1/2</p>
-        </div>
-        <button>Join</button>
-      </div>
-      <div class="game-card">
-        <div class="game-info">
-          <h3>6 players</h3>
-          <p>Blinds: 1/2</p>
-        </div>
-        <button>Join</button>
-      </div>
-      <div class="game-card">
-        <div class="game-info">
-          <h3>6 players</h3>
-          <p>Blinds: 1/2</p>
-        </div>
-        <button>Join</button>
-      </div>
-      <div class="game-card">
-        <div class="game-info">
-          <h3>6 players</h3>
-          <p>Blinds: 1/2</p>
-        </div>
-        <button>Join</button>
-      </div>
-      <div class="game-card">
-        <div class="game-info">
-          <h3>6 players</h3>
-          <p>Blinds: 1/2</p>
-        </div>
-        <button>Join</button>
-      </div>
-      <div class="game-card">
-        <div class="game-info">
-          <h3>6 players</h3>
-          <p>Blinds: 1/2</p>
-        </div>
-        <button>Join</button>
-      </div>
-      <div class="game-card">
-        <div class="game-info">
-          <h3>6 players</h3>
-          <p>Blinds: 1/2</p>
-        </div>
-        <button>Join</button>
-      </div>
-    </div>
-  </section>
-  <!-- Tournaments -->
-  <section class="tournaments">
 
-  </section>
-</body>
+      <div class="footer-legal">
+        <a href="terms.htm">Terms of Service</a>
+        <a href="privacy.htm">Privacy Policy</a>
+      </div>
 
+      <div class="footer-legal">
+        <a href="register.htm">Register</a>
+        <a href="login.htm">Login</a>
+      </div>
+    </footer>
+  </body>
 </html>

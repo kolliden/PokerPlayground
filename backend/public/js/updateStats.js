@@ -12,7 +12,6 @@ fetch(
     console.log(response);
     return response.json();
 }).then((data) => {
-    console.log(data.user);
     for (let key in data.user) {
         if (data.user.hasOwnProperty(key)) {
             let listItem = document.getElementById(key);

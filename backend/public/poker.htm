@@ -12,8 +12,24 @@
       <h1>Poker Ranked</h1>
       <ul>
         <li><a href="index.htm">Games</a></li>
-        <li><a href="rank.htm">Rank</a></li>
-        <li><a href="account.htm">Account</a></li>
+        <li><a href="solver.htm">Solver</a></li>
+
+        <li class="player-progression">
+          <p>Rank: <span id="nav-rank"></span></p>
+          <p>xp: <span id="nav-xp"></span></p>
+        </li>
+        <li class="menu-container">
+          <div class="menu" tabindex="0">
+            <img src="assets/line-horizontal-3.svg" alt="Three Bars" />
+            <div class="menu-content">
+              <a href="account.htm">Account</a>
+              <a href="about.htm">About</a>
+              <a href="contact.htm">Contact</a>
+              <a href="help.htm">Help</a>
+              <a href="logout" class="danger" onclick="logout()">Logout</a>
+            </div>
+          </div>
+        </li>
       </ul>
     </nav>
 

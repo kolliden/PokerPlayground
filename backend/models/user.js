@@ -44,11 +44,16 @@ const userSchema = new mongoose.Schema({
         required: true,
         default: 0,
     },
+    xp: {
+        type: Number,
+        required: true,
+        default: 0,
+    },
     rank: {
         type: String,
         required: true,
-        enum: ["copper", "silver", "gold", "platinum", "champion", "unranked"],
-        default: "unranked",
+        enum: ["Copper", "Silver", "Gold", "Platinum", "Unranked"],
+        default: "Unranked",
     },
 },
     {
