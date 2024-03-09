@@ -24,7 +24,6 @@ PokerPlayground is an open-source project aimed at helping players, especially n
 - **Multiplayer Gameplay**: Play poker with friends online in a user-friendly and interactive environment.
 - **Customizable Settings**: Customize game parameters to tailor the experience according to preferences.
 - **Responsive Design**: Enjoy a seamless experience across different devices and screen sizes.
-- **Community Interaction**: Engage with other players, share tips, and discuss strategies through integrated community features.
 
 ## Installation
 
