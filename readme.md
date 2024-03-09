@@ -14,89 +14,91 @@
 
 </div>
 
----
+# PokerPlayground
 
-<p align="center"> Learn modern Risk managment using our games! Through our Ranking system you
- can compare your RiskManagment skills with your friends!    <br> 
-</p>
+PokerPlayground is an open-source project aimed at helping players, especially newcomers, learn optimal poker strategy and enjoy multiplayer gameplay with friends online. The project is built using JavaScript, HTML, CSS, and Node.js on the Express framework.
 
-## 📝 Table of Contents
+## Features
 
-- [📝 Table of Contents](#-table-of-contents)
-- [🏁 Getting Started ](#-getting-started-)
-  - [Installing](#installing)
-- [🎈 Usage ](#-usage-)
-- [⛏️ Built With ](#️-built-with-)
-- [✍️ Authors ](#️-authors-)
-- [🎉 Acknowledgments ](#-acknowledgments-)
+- **Strategy Learning**: Access comprehensive resources and guides to learn optimal poker strategy for various game types.
+- **Multiplayer Gameplay**: Play poker with friends online in a user-friendly and interactive environment.
+- **Customizable Settings**: Customize game parameters to tailor the experience according to preferences.
+- **Responsive Design**: Enjoy a seamless experience across different devices and screen sizes.
+- **Community Interaction**: Engage with other players, share tips, and discuss strategies through integrated community features.
 
-<!-- ## 🧐 Problem Statement <a name = "problem_statement"></a>
+## Installation
 
-It is useful to design and follow a specific format when writing a problem statement. While there are several options
-for doing this, the following is a simple and straightforward template often used in Business Analysis to maintain
-focus on defining the problem.
+To set up PokerPlayground locally, follow these steps:
 
-- IDEAL: This section is used to describe the desired or “to be” state of the process or product. At large, this section
-  should illustrate what the expected environment would look like once the solution is implemented.
-- REALITY: This section is used to describe the current or “as is” state of the process or product.
-- CONSEQUENCES: This section is used to describe the impacts on the business if the problem is not fixed or improved upon.
-  This includes costs associated with loss of money, time, productivity, competitive advantage, and so forth.
+1. Clone the repository:
 
-Following this format will result in a workable document that can be used to understand the problem and elicit
-requirements that will lead to a winning solution. -->
-<!-- 
-## 💡 Idea / Solution <a name = "idea"></a>
+```
+git clone https://github.com/your-username/PokerPlayground.git
+```
 
-This section is used to describe potential solutions.
-
-Once the ideal, reality, and consequences sections have been
-completed, and understood, it becomes easier to provide a solution for solving the problem. -->
-
-<!-- ## ⛓️ Dependencies / Limitations <a name = "limitations"></a>
-
-- What are the dependencies of your project?
-- Describe each limitation in detailed but concise terms
-- Explain why each limitation exists
-- Provide the reasons why each limitation could not be overcome using the method(s) chosen to acquire.
-- Assess the impact of each limitation in relation to the overall findings and conclusions of your project, and if
-  appropriate, describe how these limitations could point to the need for further research. -->
-
-<!-- ## 🚀 Future Scope <a name = "future_scope"></a>
-
-Write about what you could not develop during the course of the Hackathon; and about what your project can achieve
-in the future. -->
-
-## 🏁 Getting Started <a name = "getting_started"></a>
-
-These instructions will get you a copy of the project up and running on your local machine for development
-and testing purposes. See [Installing](#installing) for notes on how to deploy the project on a live system.
-
-### Installing
-
-Install mongodb and all dependencies
+2. Navigate to the project directory:
 
 ```
 cd backend
-npm install
-node server.js
 ```
 
-## 🎈 Usage <a name="usage"></a>
+3. Install dependencies:
 
-Add notes about how to use the system.
+```
+npm install
+```
 
-## ⛏️ Built With <a name = "tech_stack"></a>
+4. Start the server:
 
-- [MongoDB](https://www.mongodb.com/) - Database
-- [Express](https://expressjs.com/) - Server Framework
-- [NodeJs](https://nodejs.org/en/) - Server Environment
-## ✍️ Authors <a name = "authors"></a>
+```
+npm start
+```
 
-- [@kolliden](https://github.com/kolliden) - Idea & Initial work
+5. Open your browser and visit `http://localhost:3000` to access PokerPlayground.
 
-See also the list of [contributors](https://github.com/kylelobo/The-Documentation-Compendium/contributors)
-who participated in this project.
+## Contributing
 
-## 🎉 Acknowledgments <a name = "acknowledgments"></a>
+Contributions to PokerPlayground are welcome! Whether you're a developer, designer, or poker enthusiast, you can contribute to the project in various ways, including:
 
-- [react-native-framework](https://starter.obytes.com/getting-started/create-new-app/)
+- Bug fixes
+- Feature enhancements
+- Documentation improvements
+- UI/UX enhancements
+- Localization
+- Testing
+
+To contribute, follow these steps:
+
+1. Fork the repository.
+2. Create a new branch for your feature or bug fix:
+```
+git checkout -b feature/your-feature-name
+```
+3. Make your changes and commit them:
+```
+git commit -m "Add your commit message here"
+```
+4. Push your changes to your fork:
+```
+git push origin feature/your-feature-name
+```
+5. Open a pull request against the `main` branch of the original repository.
+
+Please ensure that your contributions adhere to the [code of conduct](CODE_OF_CONDUCT.md).
+
+## License
+
+PokerPlayground is licensed under the [MIT License](LICENSE).
+
+## Support
+
+For questions, bug reports, or feature requests, please [open an issue](https://github.com/your-username/PokerPlayground/issues).
+
+## Acknowledgements
+
+PokerPlayground utilizes various open-source libraries and resources. We would like to extend our gratitude to the developers and contributors of these projects.
+
+---
+
+Happy playing! 🃏✨
+```
