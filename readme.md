@@ -1,8 +1,8 @@
 <p align="center">
   <a href="" rel="noopener">
- <img src="https://i.imgur.com/AZ2iWek.png" alt="Project logo"></a>
+ <img src="https://cdn.pixabay.com/photo/2013/07/13/12/18/cards-159600_640.png" alt="Project logo"></a>
 </p>
-<h3 align="center">Poker</h3>
+<h3 align="center">PokerPlayground</h3>
 
 <div align="center">
 
